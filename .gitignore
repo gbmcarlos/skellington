@@ -1,4 +1,8 @@
 .idea
 src/public/css/**/*.css
 src/public/js/**/*.js
+src/public/fonts
 src/bootstrap/cache/*.php
+node_modules
+vendor
+src/.env

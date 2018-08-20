@@ -3,7 +3,6 @@
 use Monolog\Handler\StreamHandler;
 
 return [
-
     'default' => env('LOG_CHANNEL', 'stderr'),
     'channels' => [
         'stderr' => [
@@ -14,5 +13,4 @@ return [
             ]
         ]
     ]
-
 ];
