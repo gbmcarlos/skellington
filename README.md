@@ -1,20 +1,48 @@
 ## What's this?
 This skeleton allows to have a working Laravel application running inside a Docker container completely out of the box, and configurable through environment variables.
 
-## Features 
-* Run as a [Docker](https://docs.docker.com/) container: only one dependency, Docker. It can be deployed in any decent modern server. It can be deployed in a matter of minutes. 
+## Features
+* Run as a [Docker](https://docs.docker.com/) container: only one dependency, Docker. It can be deployed in any decent modern server. It can be deployed in a matter of minutes.
 * [Laravel](https://laravel.com/docs/5.6) application.
 * `up.sh` and `local.up.sh` included: get the application running in your local with the simple command `./deploy/local.up.sh`
 * Production-ready: it will optimize Composer's autoload in production
 
-## How to use it
+## Requirements
+* Docker
+* To install it in the way stated above you will need PHP and Composer. ([Here](https://getcomposer.org/download/)'s how to get composer)
+
+## How to install it
 * This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs gbmcarlos/skellington --no-install [folder-name]` with the name of the folder where you want to create the project
 * After that, just `cd` into the project folder and start a new repository with `git init` and add your new remote with `git remote add origin {new_remote}`
 * Start working
 
-## Requirements
-* Docker 
-* To install it in the way stated above you will need PHP and Composer. ([Here](https://getcomposer.org/download/)'s how to get composer)
+### Installation
+TL;DR: run `./deploy/up.sh`.
+
+This application is dockerized, which means that everything happens inside a Docker container. The Apache server is running inside the container (as the default entrypoint), the dependencies (Composer and NPM) are installed inside the container and PHP is executed inside the container.
+To spin up the Docker container (build the image and run the container), just run `./deploy/up.sh`.
+
+### Development
+TL;DR: run `./deploy/local.up.sh` once and forget about everything else.
+
+When developing in a local environment, just run `./deploy/local.up.sh`.
+This will build the image and run the container normally, but mounting volumes for the source and vendors folders.
+
+By mounting volumes on those folders, it makes the dependencies (installed only inside the container) available outside the container (so available to your IDE).
+Also it makes all changes on those folders reflect instantly inside the container, so there is no need to re-deploy.
+
+Running `./deploy/local.up.sh` will also automatically tail the output of the container.
+
+### Running commands
+Since the application runs inside the container, all commands have to be executed there. To do so, run `docker exec -it ecp /bin/sh -c "{command}"`.
+For example, to run a Artisan command, run `docker exec -it ecp /bin/sh -c "php artisan config:cache"`
+
+## Watch assets
+To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec ecp /var/www/compile-assets.sh watch`
+
+### Extract lock files (updating dependencies)
+Composer lock: docker cp ecp:/var/www/composer.lock $PWD/../../composer.lock
+NPM lock: docker cp ecp:/var/www/package-lock.json $PWD/../../package-lock.json
 
 ## Environment variables available
 

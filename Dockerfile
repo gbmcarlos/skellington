@@ -36,7 +36,7 @@ RUN npm install
 
 ### Composer
 COPY ./composer.* /var/www/
-RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest
+RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
 
 ### Source code
 COPY ./src /var/www/src

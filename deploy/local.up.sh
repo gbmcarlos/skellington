@@ -26,6 +26,6 @@ docker run \
     -v $PWD/../vendor:/var/www/vendor \
     -v $PWD/../node_modules:/var/www/node_modules \
     ${name}:latest \
-    /bin/sh -c "php /var/www/composer.phar install -v --working-dir=/var/www --no-suggest && npm install && /var/www/compile-assets.sh && /var/www/run.sh"
+    /bin/sh -c "php /var/www/composer.phar install -v --working-dir=/var/www --no-suggest --no-dev && npm install && /var/www/compile-assets.sh && /var/www/run.sh"
 
 docker logs -f ${name}
