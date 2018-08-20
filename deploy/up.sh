@@ -6,7 +6,7 @@ export HOST_PORT=${HOST_PORT:=80}
 export CONTAINER_PORT=${CONTAINER_PORT:=8080}
 export COMPOSER_OPTIMIZE=${COMPOSER_OPTIMIZE:=true}
 
-name='skellington-laravel'
+name='skellington'
 
 cd "$(dirname "$0")"
 

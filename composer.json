@@ -1,5 +1,5 @@
 {
-    "name": "gbmcarlos/skellington-laravel",
+    "name": "gbmcarlos/skellington",
     "version": "2.0",
     "require": {
         "php": "^7.2",
