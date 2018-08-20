@@ -41,8 +41,9 @@ For example, to run a Artisan command, run `docker exec -it ecp /bin/sh -c "php 
 To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec ecp /var/www/compile-assets.sh watch`
 
 ### Extract lock files (updating dependencies)
-Composer lock: docker cp ecp:/var/www/composer.lock $PWD/../../composer.lock
-NPM lock: docker cp ecp:/var/www/package-lock.json $PWD/../../package-lock.json
+Composer lock: `docker cp ecp:/var/www/composer.lock $PWD/composer.lock` from the project's root folder.
+
+NPM lock: `docker cp ecp:/var/www/package-lock.json $PWD/package-lock.json` from the project's root folder.
 
 ## Environment variables available
 
