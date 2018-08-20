@@ -1,0 +1,17 @@
+.customers--search {
+  margin: 10px 0;
+}
+
+
+#payment-list_filter, #payment-activities_filter {
+  display: none;
+}
+
+#payment-list.processing, #payment-activities.processing {
+  background: #fafcfd;
+  color: #d2d2d2;
+
+  thead th {
+    color: #d2d2d2;
+  }
+}

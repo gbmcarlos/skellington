@@ -1,0 +1,20 @@
+{
+    "private": true,
+    "dependencies": {
+        "bootstrap": "^4.1.0",
+        "compass-mixins": "^0.12.10",
+        "font-awesome": "4.7.0",
+        "jquery": "^3.2.1",
+        "jquery-steps": "1.1.0",
+        "laravel-mix": "^2.0",
+        "lodash": "^4.17.4",
+        "mdi": "2.1.19",
+        "datatables.net": "1.10.16",
+        "datatables.net-bs4": "1.10.16",
+        "moment": "2.22.2",
+        "daterangepicker": "3.0.3",
+        "select2": "~4.0",
+        "chart.js": "2.7.2",
+        "underscore": "^1.9.1"
+    }
+}

@@ -1,1 +1,4 @@
 .idea
+src/public/css/**/*.css
+src/public/js/**/*.js
+src/bootstrap/cache/*.php
