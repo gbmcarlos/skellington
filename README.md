@@ -23,6 +23,7 @@ This skeleton allows to have a working Laravel application running inside a Dock
 | HOST_PORT          | 80            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
 | CONTAINER_PORT     | 80            | The port that Apache will listen to from inside the container. If `APACHE_USER` is a non-root user, this can not be under 1024, [here](https://www.w3.org/Daemon/User/Installation/PrivilegedPorts.html)'s why  |
 | COMPOSER_OPTIMIZE  | false         | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) |
+| ASSETS_OPTIMIZE    | false         | Optimize assets compilation |
 
 Example:
 `HOST_PORT=8000 ./deploy/local.up.sh`
@@ -49,12 +50,12 @@ Also it makes all changes on those folders reflect instantly inside the containe
 Running `./deploy/local.up.sh` will also automatically tail the output of the container.
 
 ### Running commands
-Since the application runs inside the container, all commands have to be executed there. To do so, run `docker exec -it ecp /bin/sh -c "{command}"`.
-For example, to run a Artisan command, run `docker exec -it ecp /bin/sh -c "php artisan config:cache"`
+Since the application runs inside the container, all commands have to be executed there. To do so, run `docker exec -it skellington /bin/sh -c "{command}"`.
+For example, to run a Artisan command, run `docker exec -it skellington /bin/sh -c "php artisan config:cache"`
 
-## Watch assets
-To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec ecp /var/www/compile-assets.sh watch`
+### Watch assets
+To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec -it -w /var/www skellington /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"`
 
 ### Extract lock files (updating dependencies)
-Composer lock: docker cp ecp:/var/www/composer.lock $PWD/../../composer.lock
-NPM lock: docker cp ecp:/var/www/package-lock.json $PWD/../../package-lock.json
+Composer lock: `docker cp skellington:/var/www/composer.lock $PWD/composer.lock` from the project's root folder.
+NPM lock: `docker cp skellington:/var/www/package-lock.json $PWD/package-lock.json` from the project's root folder.

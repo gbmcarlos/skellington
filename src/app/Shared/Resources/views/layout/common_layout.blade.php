@@ -1,7 +1,7 @@
 <html lang="{{ app()->getLocale() }}">
 @include('layout/header')
 <body>
-        <div class="container-scroller">
+        <div class="container">
             @yield('content')
             @include('layout/footer')
         </div>

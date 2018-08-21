@@ -6,4 +6,6 @@
  * Time: 5:40 PM
  */
 
-return [];
+return [
+    'site_name' => 'Skellington'
+];

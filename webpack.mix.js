@@ -9,7 +9,7 @@ mix.scripts([
 ], 'src/public/js/helpers.js');
 
 /// Styles
-mix.sass('src/app/Shared/Resources/assets/sass/styles.scss', 'src/public/css');
+mix.sass('src/app/Shared/Resources/assets/sass/main.scss', 'src/public/css');
 
 // Vendor
 /// Global scripts

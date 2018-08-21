@@ -25,7 +25,6 @@ RUN pecl install imagick && \
 ### Apache2 configuration
 COPY deploy/scripts/main.conf /etc/apache2/sites-available/main.conf
 RUN a2enmod rewrite macro && a2dissite 000-default && a2ensite main && sed -i 's/^Listen 80/#Listen80/' /etc/apache2/ports.conf
-COPY deploy/scripts/run.sh /var/www/run.sh
 
 ### NodeJS and NPM
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
@@ -41,14 +40,16 @@ RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader
 ### Source code
 COPY ./src /var/www/src
 
+WORKDIR /var/www
+
 ### Composer optimizie
 ARG COMPOSER_OPTIMIZE=false
 RUN if \
         [ $COMPOSER_OPTIMIZE = "true" ] ; \
     then \
-        php /var/www/composer.phar dump-autoload -v --working-dir=/var/www --optimize --classmap-authoritative; \
+        php composer.phar dump-autoload -v --working-dir=/var/www --optimize --classmap-authoritative; \
     else \
-        php /var/www/composer.phar dump-autoload -v --working-dir=/var/www; \
+        php composer.phar dump-autoload -v --working-dir=/var/www; \
     fi
 
 ### Storage folders permissions
@@ -58,8 +59,14 @@ RUN chmod 777 /var/www/src/bootstrap/cache
 
 ### Compile assets
 COPY ./webpack.mix.js /var/www/webpack.mix.js
-COPY ./deploy/scripts/compile-assets.sh /var/www/compile-assets.sh
-RUN /var/www/compile-assets.sh
+ARG ASSETS_OPTIMIZE=false
+RUN if \
+        [ $ASSETS_OPTIMIZE = "true" ] ; \
+    then \
+        node_modules/webpack/bin/webpack.js --hide-modules -p --config=node_modules/laravel-mix/setup/webpack.config.js; \
+    else \
+        node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js; \
+    fi
 
 ### Port env var
 ARG CONTAINER_PORT=80
@@ -67,4 +74,4 @@ ENV PORT $CONTAINER_PORT
 
 WORKDIR /var/www/src
 
-CMD ["/var/www/run.sh"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]

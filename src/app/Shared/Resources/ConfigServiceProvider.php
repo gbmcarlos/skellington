@@ -16,7 +16,7 @@ class ConfigServiceProvider extends ServiceProvider {
     public function boot() {
         Config::set('exposed_config', array(
             'APP_DEBUG' => Config::get('app.debug'),
-            'site_name' => Config::get('app.site_name'),
+            'site_name' => Config::get('config.site_name'),
             'endpoints' => array()
         ));
     }
