@@ -1,16 +1,16 @@
 # {{projectName}}
 Created from `gbmcarlos/skellington` as a composer skeleton (`composer create-project`)
 
-### Requirements
+## Requirements
 * Docker
 
-### Installation
+## Installation
 TL;DR: run `./deploy/up.sh`.
 
 This application is dockerized, which means that everything happens inside a Docker container. The Apache server is running inside the container (as the default entrypoint), the dependencies (Composer and NPM) are installed inside the container and PHP is executed inside the container.
 To spin up the Docker container (build the image and run the container), just run `./deploy/up.sh`.
 
-### Development
+## Development
 TL;DR: run `./deploy/local.up.sh` once and start coding.
 
 When developing in a local environment, just run `./deploy/local.up.sh`.
@@ -21,18 +21,18 @@ Also it makes all changes on those folders reflect instantly inside the containe
 
 Running `./deploy/local.up.sh` will also automatically tail the output of the container.
 
-### Running commands
+## Running commands
 Since the application runs inside the container, all commands have to be executed there. To do so, run `docker exec -it ecp /bin/sh -c "{command}"`.
 For example, to run a Artisan command, run `docker exec -it ecp /bin/sh -c "php artisan config:cache"`
 
 ## Watch assets
 To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec ecp /var/www/compile-assets.sh watch`
 
-### Extract lock files (updating dependencies)
+## Extract lock files (updating dependencies)
 Composer lock: docker cp ecp:/var/www/composer.lock $PWD/../../composer.lock
 NPM lock: docker cp ecp:/var/www/package-lock.json $PWD/../../package-lock.json
 
-### Environment variables available
+## Environment variables available
 
 |       ENV VAR      | Default value | Description |
 | ------------------ | ------------- | ----------- |
@@ -43,7 +43,7 @@ NPM lock: docker cp ecp:/var/www/package-lock.json $PWD/../../package-lock.json
 Example:
 `HOST_PORT=8000 ./deploy/local.up.sh`
 
-### Built-in Stack
+## Built-in Stack
 * [Debian (:stretch slim)](https://hub.docker.com/_/debian/)
 * Apache 2
 * [PHP 7.2.8 (:7.2-apache-stretch)](https://hub.docker.com/_/php/)
