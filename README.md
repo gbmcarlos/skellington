@@ -18,12 +18,15 @@ This skeleton allows to have a working Laravel application running inside a Dock
 
 ### Environment variables available
 
-|       ENV VAR      | Default value | Description |
-| ------------------ | ------------- | ----------- |
-| HOST_PORT          | 80            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
-| CONTAINER_PORT     | 80            | The port that Apache will listen to from inside the container. If `APACHE_USER` is a non-root user, this can not be under 1024, [here](https://www.w3.org/Daemon/User/Installation/PrivilegedPorts.html)'s why  |
-| COMPOSER_OPTIMIZE  | false         | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) |
-| ASSETS_OPTIMIZE    | false         | Optimize assets compilation |
+|       ENV VAR        | Default value | Description |
+| -------------------- | ------------- | ----------- |
+| HOST_PORT            | 80            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
+| CONTAINER_PORT       | 80            | The port that Apache will listen to from inside the container. |
+| COMPOSER_OPTIMIZE    | false         | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) |
+| ASSETS_OPTIMIZE      | false         | Optimize assets compilation |
+| BASIC_AUTH_ENABLED   | false         | Enable Basic Authentication with Apache |
+| BASIC_AUTH_USER      | false         | If `BASIC_AUTH_ENABLED` is true, this will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10) |
+| BASIC_AUTH_PASSWORD  | false         | If `BASIC_AUTH_ENABLED` is true, this will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10) |
 
 Example:
 `HOST_PORT=8000 ./deploy/local.up.sh`

@@ -22,10 +22,6 @@ RUN docker-php-ext-install \
 RUN pecl install imagick && \
     echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini
 
-### Apache2 configuration
-COPY deploy/scripts/main.conf /etc/apache2/sites-available/main.conf
-RUN a2enmod rewrite macro && a2dissite 000-default && a2ensite main && sed -i 's/^Listen 80/#Listen80/' /etc/apache2/ports.conf
-
 ### NodeJS and NPM
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get -y install nodejs
@@ -36,6 +32,19 @@ RUN npm install
 ### Composer
 COPY ./composer.* /var/www/
 RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
+
+### Apache2 configuration
+ARG BASIC_AUTH_ENABLED=false
+ENV BASIC_AUTH_ENABLED $BASIC_AUTH_ENABLED
+ARG BASIC_AUTH_USER
+ARG BASIC_AUTH_PASSWORD
+COPY deploy/scripts/main.conf /etc/apache2/sites-available/main.conf
+RUN a2enmod rewrite macro && a2dissite 000-default && a2ensite main && sed -i 's/^Listen 80/#Listen80/' /etc/apache2/ports.conf
+RUN if \
+        [ $BASIC_AUTH_ENABLED = "true" ] ; \
+    then \
+        htpasswd -cb -B -C 10 /etc/apache2/.htpasswd $BASIC_AUTH_USER $BASIC_AUTH_PASSWORD; \
+    fi
 
 ### Source code
 COPY ./src /var/www/src
