@@ -5,6 +5,7 @@ let mix = require('laravel-mix');
 mix.scripts([
     'src/app/Shared/Resources/assets/js/helpers/csrf_token.js',
     'src/app/Shared/Resources/assets/js/helpers/url.js',
+    'src/app/Shared/Resources/assets/js/helpers/file.js',
     'src/app/Shared/Resources/assets/js/helpers.js'
 ], 'src/public/js/helpers.js');
 
