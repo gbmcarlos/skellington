@@ -48,4 +48,6 @@ Example:
 * jQuery 3.2
 * Bootstrap 4.1
 
+## License
+
 This project is licensed under the terms of the [MIT license](https://opensource.org/licenses/MIT).
