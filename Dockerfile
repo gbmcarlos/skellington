@@ -3,28 +3,25 @@ FROM php:7.2-apache-stretch
 LABEL maintainer="gbmcarlos@gmail.com"
 
 ### System dependencies
+#### git and zip are necessary to use composer
+#### gnupg2 is necessary to setup node later with curl
 RUN     apt-get update \
     &&  apt-get upgrade -y \
     &&  apt-get -yq install \
-            libpng-dev \
             autoconf \
             gnupg2 \
             git \
             zip \
-            libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ### PHP extensions
 RUN docker-php-ext-install \
         pdo \
-        pdo_mysql \
-        pcntl
-RUN pecl install imagick && \
-    echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini
+        pdo_mysql
 
 ### NodeJS and NPM
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN apt-get -y install nodejs
+RUN     curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    &&  apt-get -y install nodejs
 
 COPY ./package.* /var/www/
 RUN npm install
@@ -62,9 +59,9 @@ RUN if \
     fi
 
 ### Storage folders permissions
-RUN chown -R www-data:www-data /var/www/src/storage/
-#TODO FIGURE THIS OUT
-RUN chmod 777 /var/www/src/bootstrap/cache
+#TODO FIGURE the 777 OUT
+RUN     chown -R www-data:www-data /var/www/src/storage/ \
+    &&  chmod 777 /var/www/src/bootstrap/cache
 
 ### Compile assets
 COPY ./webpack.mix.js /var/www/webpack.mix.js

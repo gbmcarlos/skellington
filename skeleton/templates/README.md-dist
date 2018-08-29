@@ -28,8 +28,10 @@ For example, to run a Artisan command, run `docker exec -it {{projectName}} /bin
 ## Watch assets
 To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec -it -w /var/www {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"`
 
-## Extract lock files (updating dependencies)
+## Update dependencies (extract lock files)
+
 Composer lock: `docker cp {{projectName}}:/var/www/composer.lock $PWD/../../composer.lock`
+
 NPM lock: `docker cp {{projectName}}:/var/www/package-lock.json $PWD/../../package-lock.json`
 
 ## Environment variables available
