@@ -16,7 +16,6 @@ cd "$(dirname "$0")"
 
 docker build \
     -t ${name}:latest \
-    --build-arg CONTAINER_PORT=${CONTAINER_PORT} \
     --build-arg COMPOSER_OPTIMIZE=${COMPOSER_OPTIMIZE} \
     --build-arg ASSETS_OPTIMIZE=${ASSETS_OPTIMIZE} \
     --build-arg BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED} \
@@ -29,5 +28,5 @@ docker rm -f ${name} || true
 docker run \
     --name ${name} \
     -d \
-    -p ${HOST_PORT}:${CONTAINER_PORT} \
+    -p ${HOST_PORT}:80 \
     ${name}:latest

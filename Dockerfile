@@ -34,12 +34,12 @@ COPY ./composer.* /var/www/
 RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
 
 ### Apache2 configuration
+RUN a2enmod rewrite
+COPY deploy/scripts/000-default.conf /etc/apache2/sites-available/000-default.conf
 ARG BASIC_AUTH_ENABLED=false
 ENV BASIC_AUTH_ENABLED $BASIC_AUTH_ENABLED
 ARG BASIC_AUTH_USER
 ARG BASIC_AUTH_PASSWORD
-COPY deploy/scripts/main.conf /etc/apache2/sites-available/main.conf
-RUN a2enmod rewrite macro && a2dissite 000-default && a2ensite main && sed -i 's/^Listen 80/#Listen80/' /etc/apache2/ports.conf
 RUN if \
         [ $BASIC_AUTH_ENABLED = "true" ] ; \
     then \
@@ -77,9 +77,6 @@ RUN if \
         node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js; \
     fi
 
-### Port env var
-ARG CONTAINER_PORT=80
-ENV PORT $CONTAINER_PORT
 
 WORKDIR /var/www/src
 

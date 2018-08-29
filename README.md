@@ -21,7 +21,6 @@ This skeleton allows to have a working Laravel application running inside a Dock
 |       ENV VAR        | Default value | Description |
 | -------------------- | ------------- | ----------- |
 | HOST_PORT            | 80            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
-| CONTAINER_PORT       | 80            | The port that Apache will listen to from inside the container. |
 | COMPOSER_OPTIMIZE    | false         | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) |
 | ASSETS_OPTIMIZE      | false         | Optimize assets compilation |
 | BASIC_AUTH_ENABLED   | false         | Enable Basic Authentication with Apache |
