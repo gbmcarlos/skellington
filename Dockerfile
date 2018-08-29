@@ -74,6 +74,30 @@ RUN if \
         node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js; \
     fi
 
+### XDebug support
+#### Installing and configuring is separated to avoid innecessary cache misses
+ARG XDEBUG_ENABLED=false
+RUN if \
+        [ $XDEBUG_ENABLED = "true" ] ; \
+    then \
+        pecl install xdebug-stable && docker-php-ext-enable xdebug; \
+    fi
+ARG XDEBUG_REMOTE_HOST
+ARG XDEBUG_REMOTE_PORT
+ARG XDEBUG_IDE_KEY
+RUN if \
+        [ $XDEBUG_ENABLED = "true" ] ; \
+    then \
+        echo '\
+zend_extension="/usr/local/php/modules/xdebug.so"\n\
+xdebug.remote_host='$XDEBUG_REMOTE_HOST'\n\
+xdebug.remote_port='$XDEBUG_REMOTE_PORT'\n\
+xdebug.idekey='$XDEBUG_IDE_KEY'\n\
+xdebug.remote_enable=1\n\
+xdebug.remote_autostart=1\n\
+xdebug.remote_connect_back=off\n\
+xdebug.max_nesting_level=1500' >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    fi
 
 WORKDIR /var/www/src
 
