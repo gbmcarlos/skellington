@@ -10,7 +10,7 @@ This skeleton allows to have a working Laravel application running inside a Dock
 * Configure your build by using simple environment variables
 
 ## How to install it
-* This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs --no-install --ignore-platform-reqs gbmcarlos/skellington target-directory 2.3.*` with the name of the folder where you want to create the project
+* This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs --no-install --ignore-platform-reqs gbmcarlos/skellington target-directory 2.4.*` with the name of the folder where you want to create the project
 * After that, just `cd` into the project folder and start a new repository with `git init` and add your new remote with `git remote add origin {new_remote}`
 * Start working
 
