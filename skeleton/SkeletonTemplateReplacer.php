@@ -14,8 +14,6 @@ class SkeletonTemplateReplacer {
 
     CONST TEMPLATES_DIR = '/skeleton/templates';
 
-    CONST DEFAULT_PROJECT_NAME = 'default-name';
-
     public static function run(Event $event) {
 
         $projectName = self::getProjectName($event);

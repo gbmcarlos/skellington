@@ -26,7 +26,7 @@ RUN     curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 COPY ./package.* /var/www/
 RUN npm install
 
-### Composer
+### Composer install
 COPY ./composer.* /var/www/
 RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
 
@@ -89,7 +89,6 @@ RUN if \
         [ $XDEBUG_ENABLED = "true" ] ; \
     then \
         echo '\
-zend_extension="/usr/local/php/modules/xdebug.so"\n\
 xdebug.remote_host='$XDEBUG_REMOTE_HOST'\n\
 xdebug.remote_port='$XDEBUG_REMOTE_PORT'\n\
 xdebug.idekey='$XDEBUG_IDE_KEY'\n\

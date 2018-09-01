@@ -22,24 +22,24 @@ Also it makes all changes on those folders reflect instantly inside the containe
 Running `./deploy/local.up.sh` will also automatically tail the output of the container.
 
 ## Environment variables available
+These environment variables are used and given a default value only in the `up.sh` and `local.up.sh` scripts as part of the docker `build` and `run` commands. If you build the docker image and run the docker container on your own, make sure to pass the values to those commands accordingly.
 
-|       ENV VAR        |  Default value | Description |
-| -------------------- | -------------- | ----------- |
-| HOST_PORT            | 80             | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through (build argument only) |
-| COMPOSER_OPTIMIZE    | false          | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) (build argument only) |
-| ASSETS_OPTIMIZE      | false          | Optimize assets compilation (build argument only) |
-| BASIC_AUTH_ENABLED   | false          | Enable Basic Authentication with Apache (Persisted environment variable) |
-| BASIC_AUTH_USER      | admin          | If `BASIC_AUTH_ENABLED` is true, this will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10) (build argument only) |
-| BASIC_AUTH_PASSWORD  | password       | If `BASIC_AUTH_ENABLED` is true, this will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10) (build argument only) |
-| XDEBUG_ENABLED       | false          | Enables and configures Xdebug inside the container (build argument only) |
-| XDEBUG_REMOTE_HOST   | 10.254.254.254 | Used as the `xdebug.remote_host` PHP ini configuration value (build argument only) |
-| XDEBUG_REMOTE_PORT   | 9000           | Used as the `xdebug.remote_port` PHP ini configuration value (build argument only) |
-| XDEBUG_IDE_KEY       | PHPSTORM       | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
-
-This environment variables are used only in the `up.sh` and `local.up.sh` scripts as part of the docker `build` and `run` commands.
+|       ENV VAR        |                  Default value                | Description |
+| -------------------- | --------------------------------------------- | ----------- |
+| PROJECT_NAME         | Name of the project's root folder             | Used to name the docker image and docker container from the `up.sh` files |
+| HOST_PORT            | 80                                            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
+| COMPOSER_OPTIMIZE    | `true` for `up.sh`, `false` for `local.up.sh` | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) (build argument only) |
+| ASSETS_OPTIMIZE      | `true` for `up.sh`, `false` for `local.up.sh` | Optimize assets compilation (build argument only) |
+| BASIC_AUTH_ENABLED   | `true` for `up.sh`, `false` for `local.up.sh` | Enable Basic Authentication with Apache (Persisted environment variable) |
+| BASIC_AUTH_USER      | admin                                         | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10) (build argument only) |
+| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                       | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10) (build argument only) |
+| XDEBUG_ENABLED       | `true` for `up.sh`, `false` for `local.up.sh` | Enables and configures Xdebug inside the container (build argument only) |
+| XDEBUG_REMOTE_HOST   | 10.254.254.254                                | Used as the `xdebug.remote_host` PHP ini configuration value (build argument only) |
+| XDEBUG_REMOTE_PORT   | 9000                                          | Used as the `xdebug.remote_port` PHP ini configuration value (build argument only) |
+| XDEBUG_IDE_KEY       | PHPSTORM                                      | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
 
 Example:
-`HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=password ./deploy/local.up.sh`
+`HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
 
 ## Running commands
 Since the application runs inside the container, all commands have to be executed there. To do so, run `docker exec -it {{projectName}} /bin/sh -c "{command}"`.
@@ -61,6 +61,9 @@ Use the `XDEBUG_` environment variables to configure your project's debugging.
 
 #### Xdebug for PhpStorm on Mac
 Check [this documentation](https://gist.github.com/gbmcarlos/f90bef184873c46c6186880b3d633ff6) to configure your IDE and system.
+Use the `XDEBUG_` environment variables and the path mappings:
+* "src" -> `/var/www/src`
+* "vendor" -> `/var/www/vendor`
 
 ## Built-in Stack
 * [Debian (:stretch slim)](https://hub.docker.com/_/debian/)
