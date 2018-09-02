@@ -15,11 +15,47 @@ RUN     apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ### PHP extensions
-RUN docker-php-ext-install \
-        pdo \
-        pdo_mysql
+#### Install both opcache and xdebug regardles of the environment (regardless of the env vars), they will be enabled or disabled later
+RUN     pecl install \
+            xdebug-stable \
+    &&  docker-php-ext-install \
+            pdo \
+            pdo_mysql \
+            opcache \
+    &&  docker-php-ext-enable \
+            xdebug
+
+### Configure PHP
+#### https://secure.php.net/manual/en/opcache.installation.php#opcache.installation.recommended
+#### If OPTIMIZE_PHP set the error reporting settings and the setting OPCache
+#### If not OPTIMIZE_PHP, set the error reporting settings and delete the .ini config file for OPCache that was created by the docker-php-ext-install script
+ARG OPTIMIZE_PHP=false
+RUN if \
+        [ $OPTIMIZE_PHP = "true" ] ; \
+    then \
+            echo '\
+display_errors=Off\n\
+display_startup_errors=Off\n\
+error_reporting=E_ALL\n\
+log_errors=On' >> /usr/local/etc/php/php.ini \
+        &&  echo '\
+opcache.memory_consumption=Off\n\
+opcache.interned_strings_buffer=Off\n\
+opcache.max_accelerated_files=Off\n\
+opcache.revalidate_freq=Off\n\
+opcache.fast_shutdown=Off\n\
+opcache.enable_cli=On' >> /usr/local/etc/php/conf.d/opcache.ini; \
+    else \
+            echo '\
+display_errors=STDOUT\n\
+display_startup_errors=On\n\
+error_reporting=E_ALL\n\
+log_errors=On' >> /usr/local/etc/php/php.ini \
+        &&  rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini; \
+    fi
 
 ### NodeJS and NPM
+#### https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 RUN     curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     &&  apt-get -y install nodejs
 
@@ -48,10 +84,10 @@ COPY ./src /var/www/src
 
 WORKDIR /var/www
 
-### Composer optimizie
-ARG COMPOSER_OPTIMIZE=false
+### Composer optimize
+ARG OPTIMIZE_COMPOSER=false
 RUN if \
-        [ $COMPOSER_OPTIMIZE = "true" ] ; \
+        [ $OPTIMIZE_COMPOSER = "true" ] ; \
     then \
         php composer.phar dump-autoload -v --working-dir=/var/www --optimize --classmap-authoritative; \
     else \
@@ -65,9 +101,9 @@ RUN     chown -R www-data:www-data /var/www/src/storage/ \
 
 ### Compile assets
 COPY ./webpack.mix.js /var/www/webpack.mix.js
-ARG ASSETS_OPTIMIZE=false
+ARG OPTIMIZE_ASSETS=false
 RUN if \
-        [ $ASSETS_OPTIMIZE = "true" ] ; \
+        [ $OPTIMIZE_ASSETS = "true" ] ; \
     then \
         node_modules/webpack/bin/webpack.js --hide-modules -p --config=node_modules/laravel-mix/setup/webpack.config.js; \
     else \
@@ -75,13 +111,9 @@ RUN if \
     fi
 
 ### XDebug support
-#### Installing and configuring is separated to avoid innecessary cache misses
+#### If XDEBUG_ENABLED set the settings for Xdebug
+#### If not XDEBUG_ENABLED, delete the .ini config file that was created by the docker-php-ext-enable script
 ARG XDEBUG_ENABLED=false
-RUN if \
-        [ $XDEBUG_ENABLED = "true" ] ; \
-    then \
-        pecl install xdebug-stable && docker-php-ext-enable xdebug; \
-    fi
 ARG XDEBUG_REMOTE_HOST
 ARG XDEBUG_REMOTE_PORT
 ARG XDEBUG_IDE_KEY
@@ -96,7 +128,12 @@ xdebug.remote_enable=1\n\
 xdebug.remote_autostart=1\n\
 xdebug.remote_connect_back=off\n\
 xdebug.max_nesting_level=1500' >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    else \
+        rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     fi
+
+# Expose 80 by default
+EXPOSE 80
 
 WORKDIR /var/www/src
 

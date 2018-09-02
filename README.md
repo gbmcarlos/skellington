@@ -6,7 +6,7 @@ This skeleton allows to have a working Laravel application running inside a Dock
 * [Laravel 5.6](https://laravel.com/docs/5.6) application.
 * Xdebug support
 * `up.sh` and `local.up.sh` included: get the application running anywhere with the simple command `./deploy/up.sh` or `./deploy/local.up.sh`
-* Production-ready: Optimize Composer's autoload, optimize assets compilation or add HTTP Basic Authentication.
+* Production-ready: Optimize Composer's autoload, optimize assets compilation, add HTTP Basic Authentication, set PHP configuration values [the right way](https://www.phptherightway.com/#error_reporting) or enable [OPCache](https://secure.php.net/book.opcache).
 * Configure your build by using simple environment variables
 
 ## How to install it
@@ -21,16 +21,17 @@ This skeleton allows to have a working Laravel application running inside a Dock
 ## Environment variables available
 These environment variables are used and given a default value only in the `up.sh` and `local.up.sh` scripts as part of the docker `build` and `run` commands. If you build the docker image and run the docker container on your own, make sure to pass the values to those commands accordingly.
 
-|       ENV VAR        |                  Default value                | Description |
+|       ENV VAR        |                 Default value                 | Description |
 | -------------------- | --------------------------------------------- | ----------- |
 | PROJECT_NAME         | Name of the project's root folder             | Used to name the docker image and docker container from the `up.sh` files |
 | HOST_PORT            | 80                                            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
-| COMPOSER_OPTIMIZE    | `true` for `up.sh`, `false` for `local.up.sh` | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) (build argument only) |
-| ASSETS_OPTIMIZE      | `true` for `up.sh`, `false` for `local.up.sh` | Optimize assets compilation (build argument only) |
+| OPTIMIZE_PHP         | `true` for `up.sh`, `false` for `local.up.sh` | Set PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache) (build argument only) |
+| OPTIMIZE_COMPOSER    | `true` for `up.sh`, `false` for `local.up.sh` | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) (build argument only) |
+| OPTIMIZE_ASSETS      | `true` for `up.sh`, `false` for `local.up.sh` | Optimize assets compilation (build argument only) |
 | BASIC_AUTH_ENABLED   | `true` for `up.sh`, `false` for `local.up.sh` | Enable Basic Authentication with Apache (Persisted environment variable) |
 | BASIC_AUTH_USER      | admin                                         | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10) (build argument only) |
 | BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                       | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10) (build argument only) |
-| XDEBUG_ENABLED       | `true` for `up.sh`, `false` for `local.up.sh` | Enables and configures Xdebug inside the container (build argument only) |
+| XDEBUG_ENABLED       | `false` for `up.sh`, `true` for `local.up.sh` | Enables Xdebug inside the container. (build argument only) |
 | XDEBUG_REMOTE_HOST   | 10.254.254.254                                | Used as the `xdebug.remote_host` PHP ini configuration value (build argument only) |
 | XDEBUG_REMOTE_PORT   | 9000                                          | Used as the `xdebug.remote_port` PHP ini configuration value (build argument only) |
 | XDEBUG_IDE_KEY       | PHPSTORM                                      | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
