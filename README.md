@@ -34,7 +34,7 @@ These environment variables are used and given a default value only in the `up.s
 | XDEBUG_ENABLED       | `false` for `up.sh`, `true` for `local.up.sh` | Enables Xdebug inside the container. (build argument only) |
 | XDEBUG_REMOTE_HOST   | 10.254.254.254                                | Used as the `xdebug.remote_host` PHP ini configuration value (build argument only) |
 | XDEBUG_REMOTE_PORT   | 9000                                          | Used as the `xdebug.remote_port` PHP ini configuration value (build argument only) |
-| XDEBUG_IDE_KEY       | PHPSTORM                                      | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
+| XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                       | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
 
 Example:
 `HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
@@ -43,8 +43,8 @@ Example:
 * [Debian (:stretch slim)](https://hub.docker.com/_/debian/)
 * Apache 2
 * [PHP 7.2.8 (:7.2-apache-stretch)](https://hub.docker.com/_/php/)
-* Xdebug 2.6
-* Laravel 5.6
+* [Xdebug 2.6](https://xdebug.org/)
+* [Laravel 5.6](https://laravel.com/docs/5.6/)
 * jQuery 3.2
 * Bootstrap 4.1
 
