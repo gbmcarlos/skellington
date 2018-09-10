@@ -5,7 +5,8 @@ LABEL maintainer="gbmcarlos@gmail.com"
 ### System dependencies
 #### git and zip are necessary to use composer
 #### gnupg2 is necessary to setup node later with curl
-RUN     apt-get update \
+RUN     set -ex \
+    &&  apt-get update \
     &&  apt-get upgrade -y \
     &&  apt-get -yq install \
             autoconf \
@@ -16,7 +17,8 @@ RUN     apt-get update \
 
 ### PHP extensions
 #### Install both opcache and xdebug regardles of the environment (regardless of the env vars), they will be enabled or disabled later
-RUN     pecl install \
+RUN     set -ex \
+    &&  pecl install \
             xdebug-stable \
     &&  docker-php-ext-install \
             pdo \
