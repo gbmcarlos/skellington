@@ -39,21 +39,22 @@ RUN npm install
 COPY ./composer.* /var/www/
 RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
 
-## www user for nginx and php-fpm to share
-RUN adduser -D -g 'www' www
-
 ## SOURCE CODE
 COPY ./src /var/www/src
-
 WORKDIR /var/www
+
+## PERMISSIONS
+### create www user and group for nginx
+### set the permission for the temporary file of nginx
+### set permission for the storage folder
+RUN     adduser -D -g 'www' www \
+    &&  chown -R www:www /var/tmp/nginx \
+    &&  chown -R www:www src/storage
 
 ## COMPOSER AUTOLOADER
 ### Now that we've copied the source code, dump the autoloader
 ### By default, optimize the autoloader
 RUN php /var/www/composer.phar dump-autoload -v --optimize --classmap-authoritative;
-
-# storage folder permissions
-RUN chown -R www:www src/storage
 
 ## AGGREGATE ASSETS
 ### by default, optimize the aggregation of assets
