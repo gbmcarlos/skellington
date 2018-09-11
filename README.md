@@ -40,9 +40,9 @@ Example:
 `HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
 
 ## Built-in Stack
-* [Alpine Linux 3.8 (:stretch slim)](https://hub.docker.com/_/alpine/)
+* [Alpine Linux 3.8 (:3.8)](https://hub.docker.com/_/alpine/)
 * [Nginx 1.14.1](http://nginx.org/)
-* [PHP 7.2.8 (:7.2-fpm-alpine)](https://hub.docker.com/_/php/)
+* [PHP 7.2.8 (:7.2-fpm-alpine3.8)](https://hub.docker.com/_/php/)
 * [Xdebug 2.6.1](https://xdebug.org/)
 * [Laravel 5.6](https://laravel.com/docs/5.6/)
 * [Node.js 8.11.4](https://nodejs.org/en/docs/)
