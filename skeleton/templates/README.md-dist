@@ -66,10 +66,9 @@ Use the `XDEBUG_` environment variables and the path mappings:
 * "vendor" -> `/var/www/vendor`
 
 ## Built-in Stack
-* [Debian (:stretch slim)](https://hub.docker.com/_/debian/)
-* Apache 2
-* [PHP 7.2.8 (:7.2-apache-stretch)](https://hub.docker.com/_/php/)
-* [Xdebug 2.6](https://xdebug.org/)
+* [Alpine Linux 3.8 (:stretch slim)](https://hub.docker.com/_/alpine/)
+* [Nginx 1.14.1](http://nginx.org/)
+* [PHP 7.2.8 (:7.2-fpm-alpine)](https://hub.docker.com/_/php/)
+* [Xdebug 2.6.1](https://xdebug.org/)
 * [Laravel 5.6](https://laravel.com/docs/5.6/)
-* jQuery 3.2
-* Bootstrap 4.1
+* [Node.js 8.11.4](https://nodejs.org/en/docs/)
