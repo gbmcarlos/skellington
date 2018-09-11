@@ -45,7 +45,7 @@ WORKDIR /var/www
 
 ## PERMISSIONS
 ### create www user and group for nginx
-### set the permission for the temporary file of nginx
+### set the permission for the temp folder of nginx
 ### set permission for the storage folder
 RUN     adduser -D -g 'www' www \
     &&  chown -R www:www /var/tmp/nginx \
