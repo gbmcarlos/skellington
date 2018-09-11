@@ -10,7 +10,7 @@ This skeleton allows to have a working Laravel application running inside a Dock
 * Configure your build by using simple environment variables
 
 ## How to install it
-* This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs --no-install --ignore-platform-reqs gbmcarlos/skellington target-directory 3.0.*` with the name of the folder where you want to create the project
+* This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs --no-install --ignore-platform-reqs gbmcarlos/skellington target-directory 3.1.*` with the name of the folder where you want to create the project
 * After that, just `cd` into the project folder and start a new repository with `git init` and add your new remote with `git remote add origin {new_remote}`
 * Start working
 
@@ -40,13 +40,12 @@ Example:
 `HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
 
 ## Built-in Stack
-* [Debian (:stretch slim)](https://hub.docker.com/_/debian/)
-* Apache 2
-* [PHP 7.2.8 (:7.2-apache-stretch)](https://hub.docker.com/_/php/)
-* [Xdebug 2.6](https://xdebug.org/)
+* [Alpine Linux 3.8 (:stretch slim)](https://hub.docker.com/_/alpine/)
+* [Nginx 1.14.1](http://nginx.org/)
+* [PHP 7.2.8 (:7.2-fpm-alpine)](https://hub.docker.com/_/php/)
+* [Xdebug 2.6.1](https://xdebug.org/)
 * [Laravel 5.6](https://laravel.com/docs/5.6/)
-* jQuery 3.2
-* Bootstrap 4.1
+* [Node.js 8.11.4](https://nodejs.org/en/docs/)
 
 ## License
 This project is licensed under the terms of the [MIT license](https://opensource.org/licenses/MIT).
