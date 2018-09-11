@@ -7,10 +7,12 @@ LABEL maintainer="gbmcarlos@gmail.com"
 ### apache2-utils is necessary to use htpasswd to encrypt the password for basic auth
 ### $PHPIZE_DEPS contains the dependencies to use phpize, which is required to install with pecl
 ### supervisor, nginx and node+npm are part of the stack
+### gettext is necessary to replace environment variables in the nginx config file at run time, for the basic auth
 RUN     apk update \
     &&  apk add \
             bash \
             vim \
+            gettext \
             apache2-utils \
             supervisor \
             nginx \
@@ -18,12 +20,10 @@ RUN     apk update \
             $PHPIZE_DEPS
 
 ## PHP EXTENSION
-### Install both opcache and xdebug regardles of the environment (regardless of the env vars), they will be enabled or disabled later
+### Install xdebug but don't enable it, it will be enabled at run time if needed
 RUN     set -ex \
     &&  pecl install \
             xdebug-2.6.1 \
-    &&  docker-php-ext-enable \
-            xdebug \
     &&  docker-php-ext-install \
             pdo \
             pdo_mysql \
@@ -34,49 +34,9 @@ COPY ./package.* /var/www/
 RUN npm install
 
 ## COMPOSER INSTALL
-### Not autolader, it will be created later on
+### Here we are just installing the dependencies, so don't dump the autoloader yet
 COPY ./composer.* /var/www/
 RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
-
-## CONFIGURATION FILES
-### php, php-fpm, nginx and supervisor config files
-COPY ./deploy/scripts/php.ini /usr/local/etc/php/php.ini
-COPY ./deploy/scripts/php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY ./deploy/scripts/nginx.conf /etc/nginx/nginx.conf
-COPY ./deploy/scripts/supervisor.conf /etc/supervisor.conf
-
-## CONFIGURE PHP
-### https://secure.php.net/manual/en/opcache.installation.php#opcache.installation.recommended
-### If OPTIMIZE_PHP, set the error reporting settings and the setting OPCache
-### If not OPTIMIZE_PHP, set the error reporting settings and delete the .ini config file for OPCache that was created by the docker-php-ext-install script
-ARG OPTIMIZE_PHP=false
-RUN if \
-        [ $OPTIMIZE_PHP = "true" ] ; \
-    then \
-            echo $'\n\
-display_errors=Off\n\
-display_startup_errors=Off\n\
-error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT\n\
-mysqlnd.collect_memory_statistics = Off\n\
-zend.assertions = -1\n\
-log_errors=On' >> /usr/local/etc/php/php.ini \
-        &&  echo $'\n\
-opcache.memory_consumption=Off\n\
-opcache.interned_strings_buffer=Off\n\
-opcache.max_accelerated_files=Off\n\
-opcache.revalidate_freq=Off\n\
-opcache.fast_shutdown=Off\n\
-opcache.enable_cli=On' >> /usr/local/etc/php/conf.d/opcache.ini; \
-    else \
-            echo $'\n\
-display_errors=STDOUT\n\
-display_startup_errors=On\n\
-error_reporting=E_ALL\n\
-mysqlnd.collect_memory_statistics=Off\n\
-zend.assertions=1\n\
-log_errors=On' >> /usr/local/etc/php/php.ini \
-        &&  rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini; \
-    fi
 
 ## www user for nginx and php-fpm to share
 RUN adduser -D -g 'www' www
@@ -86,28 +46,28 @@ COPY ./src /var/www/src
 
 WORKDIR /var/www
 
-# storage folder permissions
-#RUN chown -R www:www src/storage
-
 ## COMPOSER AUTOLOADER
-ARG OPTIMIZE_COMPOSER=false
-RUN if \
-        [ $OPTIMIZE_COMPOSER = "true" ] ; \
-    then \
-        php composer.phar dump-autoload -v --optimize --classmap-authoritative; \
-    else \
-        php composer.phar dump-autoload -v; \
-    fi
+### Now that we've copied the source code, dump the autoloader
+### By default, optimize the autoloader
+RUN php /var/www/composer.phar dump-autoload -v --optimize --classmap-authoritative;
+
+# storage folder permissions
+RUN chown -R www:www src/storage
 
 ## AGGREGATE ASSETS
+### by default, optimize the aggregation of assets
 COPY ./webpack.mix.js webpack.mix.js
-ARG OPTIMIZE_ASSETS=false
-RUN if \
-        [ $OPTIMIZE_ASSETS = "true" ] ; \
-    then \
-        node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p; \
-    else \
-        node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js; \
-    fi
+RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p;
 
-CMD ["supervisord", "-n", "-c", "/etc/supervisor.conf"]
+COPY ./deploy/scripts/entrypoint.sh entrypoint.sh
+
+## CONFIGURATION FILES
+### php, php-fpm, nginx and supervisor config files
+COPY ./deploy/config/php.ini /usr/local/etc/php/php.ini
+COPY ./deploy/config/php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY ./deploy/config/nginx.conf /etc/nginx/nginx.conf
+COPY ./deploy/config/supervisor.conf /etc/supervisor.conf
+
+EXPOSE 80
+
+CMD ["/var/www/entrypoint.sh"]

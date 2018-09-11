@@ -1,2 +1,12 @@
-./vendor
-./node_modules
+.idea
+.git
+vendor
+node_modules
+.editorconfig
+.DS_Store
+src/app/bootstrap/cache
+src/storage/framework/cache/*
+src/storage/framework/sessions/*
+src/storage/framework/views/*
+src/public/css/*
+src/public/js/*
