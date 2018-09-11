@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 # Set the name of the project root folder as the default value for PROJECT_NAME
 export PROJECT_NAME=${PROJECT_NAME:=$(basename $(dirname $PWD))}
 
-export HOST_PORT=${HOST_PORT:=80}
+export HOST_PORT=${HOST_PORT:=81}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=false}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=false}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=false}
@@ -43,6 +43,6 @@ docker run \
     -v $PWD/../vendor:/var/www/vendor \
     -v $PWD/../node_modules:/var/www/node_modules \
     ${PROJECT_NAME}:latest \
-    /bin/sh -c "cd /var/www && php composer.phar install -v --working-dir=/var/www --no-suggest --no-dev && npm install && node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js && apache2ctl -D FOREGROUND"
+
 
 docker logs -f ${PROJECT_NAME}
