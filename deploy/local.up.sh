@@ -43,6 +43,6 @@ docker run \
     -v $PWD/../vendor:/var/www/vendor \
     -v $PWD/../node_modules:/var/www/node_modules \
     ${PROJECT_NAME}:latest \
-        /bin/sh -c "cd /var/www && php composer.phar install -v --working-dir=/var/www --no-suggest --no-dev && npm install && node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js && supervisord -n -c /etc/supervisor.conf"
+    /bin/sh -c "cd /var/www && php composer.phar install -v --working-dir=/var/www --no-suggest --no-dev && npm install && node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js && supervisord -n -c /etc/supervisor.conf"
 
 docker logs -f ${PROJECT_NAME}
