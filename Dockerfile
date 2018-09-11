@@ -49,7 +49,8 @@ WORKDIR /var/www
 ### set permission for the storage folder
 RUN     adduser -D -g 'www' www \
     &&  chown -R www:www /var/tmp/nginx \
-    &&  chown -R www:www src/storage
+    &&  chown -R www:www src/storage \
+    &&  chown -R www:www src/bootstrap/cache
 
 ## COMPOSER AUTOLOADER
 ### Now that we've copied the source code, dump the autoloader
