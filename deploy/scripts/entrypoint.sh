@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export PROJECT_NAME=${PROJECT_NAME:=localhost}
+export PROJECT_NAME=${PROJECT_NAME=localhost}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=true}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=true}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=true}
@@ -82,6 +82,7 @@ then
 else
     export BASIC_AUTH_ENABLED=off ;
 fi
-envsubst '${BASIC_AUTH_ENABLED}${PROJECT_NAME}' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf
+envsubst '${BASIC_AUTH_ENABLED}${PROJECT_NAME}' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
+mv /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
 
 supervisord -n -c /etc/supervisor.conf

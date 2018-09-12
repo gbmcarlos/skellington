@@ -20,7 +20,7 @@ RUN     apk update \
             nodejs-npm=8.11.4-r0 \
             $PHPIZE_DEPS
 
-## PHP EXTENSION
+## PHP EXTENSIONS
 ### Install xdebug but don't enable it, it will be enabled at run time if needed
 RUN     set -ex \
     &&  pecl install \
@@ -62,7 +62,10 @@ RUN php /var/www/composer.phar dump-autoload -v --optimize --classmap-authoritat
 COPY ./webpack.mix.js webpack.mix.js
 RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p;
 
+## ENTRYPOINT
+### Make sure it has execution permissions
 COPY ./deploy/scripts/entrypoint.sh entrypoint.sh
+RUN chmod +x /var/www/entrypoint.sh
 
 ## CONFIGURATION FILES
 ### php, php-fpm, nginx and supervisor config files
