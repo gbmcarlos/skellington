@@ -26,22 +26,28 @@ RUN     set -ex \
     &&  pecl install \
             xdebug-2.6.1 \
     &&  docker-php-ext-install \
-            pdo \
             pdo_mysql \
             opcache
 
-## NPM INSTALL
+WORKDIR /var/www
+
+## SCRIPTS
+### Make sure all scripts have execution permissions
+COPY ./deploy/scripts/* /var/www/
+RUN chmod +x /var/www/*.sh
+
+## NPM
 COPY ./package.* /var/www/
 RUN npm install
 
-## COMPOSER INSTALL
-### Here we are just installing the dependencies, so don't dump the autoloader yet
+## COMPOSER
+### So far, we are just going to install the dependencies, so no need to dump the autoloader yet
+RUN /var/www/install-composer.sh --quiet
 COPY ./composer.* /var/www/
 RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
 
 ## SOURCE CODE
 COPY ./src /var/www/src
-WORKDIR /var/www
 
 ## PERMISSIONS
 ### create www user and group for nginx
@@ -61,11 +67,6 @@ RUN php /var/www/composer.phar dump-autoload -v --optimize --classmap-authoritat
 ### by default, optimize the aggregation of assets
 COPY ./webpack.mix.js webpack.mix.js
 RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p;
-
-## ENTRYPOINT
-### Make sure it has execution permissions
-COPY ./deploy/scripts/entrypoint.sh entrypoint.sh
-RUN chmod +x /var/www/entrypoint.sh
 
 ## CONFIGURATION FILES
 ### php, php-fpm, nginx and supervisor config files
