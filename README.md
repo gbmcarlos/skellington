@@ -6,8 +6,8 @@ This skeleton allows to have a working Laravel application running inside a Dock
 * [Laravel 5.6](https://laravel.com/docs/5.6) application.
 * Xdebug support
 * Multiple start-up scripts provided
-    * `up.sh`: (supposed to tun on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
-    * `local.up.sh`: (supposed to tun on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
+    * `up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
+    * `local.up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
     * `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
     * `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the web service (start nginx and php-fpm through supervisord) (this is the default entry point of the Docker container)
 * Configure the run-time environment with environment variables
@@ -34,7 +34,7 @@ These environment variables are given a default value in the `up.sh` and `local.
 | OPTIMIZE_PHP         | `true` (`false` in `local.up.sh`)                                              | Sets PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache). |
 | OPTIMIZE_COMPOSER    | `true` (`false` in `local.up.sh`)                                              | Optimizes Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps). |
 | OPTIMIZE_ASSETS      | `true` (`false` in `local.up.sh`)                                              | Optimizes assets compilation. |
-| BASIC_AUTH_ENABLED   | `true` (`false` in `local.up.sh`)                                              | Enables Basic Authentication with Apache. |
+| BASIC_AUTH_ENABLED   | `true` (`false` in `local.up.sh`)                                              | Enables Basic Authentication with Nginx. |
 | BASIC_AUTH_USER      | admin                                                                          | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10). |
 | BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                                                        | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10). |
 | XDEBUG_ENABLED       | `false` (`true` in `local.up.sh`)                                              | Enables Xdebug inside the container. |
