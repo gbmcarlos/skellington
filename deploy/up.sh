@@ -4,9 +4,8 @@ set -ex
 
 cd "$(dirname "$0")"
 
-# Set the name of the project root folder as the default value for PROJECT_NAME
-export PROJECT_NAME=${PROJECT_NAME:=$(basename $(dirname $PWD))}
 export HOST_PORT=${HOST_PORT:=81}
+export PROJECT_NAME=${PROJECT_NAME:=$(basename $(dirname $PWD))}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=true}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=true}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=true}

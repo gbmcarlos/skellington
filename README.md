@@ -5,9 +5,15 @@ This skeleton allows to have a working Laravel application running inside a Dock
 * Run as a [Docker](https://docs.docker.com/) container: one dependency, one tool, Docker.
 * [Laravel 5.6](https://laravel.com/docs/5.6) application.
 * Xdebug support
-* `up.sh` and `local.up.sh` included: get the application running anywhere with the simple command `./deploy/up.sh` or `./deploy/local.up.sh`
-* Production-ready: Optimize Composer's autoload, optimize assets compilation, add HTTP Basic Authentication, set PHP configuration values [the right way](https://www.phptherightway.com/#error_reporting) or enable [OPCache](https://secure.php.net/book.opcache).
-* Configure your build by using simple environment variables
+* Multiple start-up scripts provided
+    * `up.sh`: (supposed to tun on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
+    * `local.up.sh`: (supposed to tun on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
+    * `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
+    * `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the web service (start nginx and php-fpm through supervisord) (this is the default entry point of the Docker container)
+* Configure the run-time environment with environment variables
+    * Optimize multiple aspects of your application for production with `OPTIMIZE_` env vars
+    * Set Basic Authentication with `BASIC_AUTH_` env vars
+    * Debug in your local with `XDEBUG_` env vars
 
 ## How to install it
 * This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs --no-install --ignore-platform-reqs gbmcarlos/skellington target-directory 3.1.*` with the name of the folder where you want to create the project
@@ -19,25 +25,27 @@ This skeleton allows to have a working Laravel application running inside a Dock
 * To install it in the way stated above you will need PHP and Composer. ([Here](https://getcomposer.org/download/)'s how to get composer)
 
 ## Environment variables available
-These environment variables are used and given a default value only in the `up.sh` and `local.up.sh` scripts as part of the docker `build` and `run` commands. If you build the docker image and run the docker container on your own, make sure to pass the values to those commands accordingly.
+These environment variables are given a default value in the `up.sh` and `local.up.sh` (host) scripts, and also in the `configure.sh` and `entrypoint.sh` (container) scripts. The default value in any of the host scripts will override the default value in the container scripts.
 
 |       ENV VAR        |                 Default value                 | Description |
 | -------------------- | --------------------------------------------- | ----------- |
-| PROJECT_NAME         | Name of the project's root folder             | Used to name the docker image and docker container from the `up.sh` files |
-| HOST_PORT            | 80                                            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
-| OPTIMIZE_PHP         | `true` for `up.sh`, `false` for `local.up.sh` | Set PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache) (build argument only) |
-| OPTIMIZE_COMPOSER    | `true` for `up.sh`, `false` for `local.up.sh` | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) (build argument only) |
-| OPTIMIZE_ASSETS      | `true` for `up.sh`, `false` for `local.up.sh` | Optimize assets compilation (build argument only) |
-| BASIC_AUTH_ENABLED   | `true` for `up.sh`, `false` for `local.up.sh` | Enable Basic Authentication with Apache (Persisted environment variable) |
-| BASIC_AUTH_USER      | admin                                         | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10) (build argument only) |
-| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                       | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10) (build argument only) |
-| XDEBUG_ENABLED       | `false` for `up.sh`, `true` for `local.up.sh` | Enables Xdebug inside the container. (build argument only) |
-| XDEBUG_REMOTE_HOST   | 10.254.254.254                                | Used as the `xdebug.remote_host` PHP ini configuration value (build argument only) |
-| XDEBUG_REMOTE_PORT   | 9000                                          | Used as the `xdebug.remote_port` PHP ini configuration value (build argument only) |
-| XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                       | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
+| PROJECT_NAME         | Name of the project's root folder (`localhost` in the host container scripts)  | Used to name the docker image and docker container from the `up.sh` files, and as the name server in nginx. |
+| HOST_PORT            | 80                                                                             | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through. |
+| OPTIMIZE_PHP         | `true` (`false` in `local.up.sh`)                                              | Sets PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache). |
+| OPTIMIZE_COMPOSER    | `true` (`false` in `local.up.sh`)                                              | Optimizes Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps). |
+| OPTIMIZE_ASSETS      | `true` (`false` in `local.up.sh`)                                              | Optimizes assets compilation. |
+| BASIC_AUTH_ENABLED   | `true` (`false` in `local.up.sh`)                                              | Enables Basic Authentication with Apache. |
+| BASIC_AUTH_USER      | admin                                                                          | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10). |
+| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                                                        | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10). |
+| XDEBUG_ENABLED       | `false` (`true` in `local.up.sh`)                                              | Enables Xdebug inside the container. |
+| XDEBUG_REMOTE_HOST   | 10.254.254.254                                                                 | Used as the `xdebug.remote_host` PHP ini configuration value. |
+| XDEBUG_REMOTE_PORT   | 9000                                                                           | Used as the `xdebug.remote_port` PHP ini configuration value. |
+| XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                                                        | Used as the `xdebug.idekey` PHP ini configuration value. |
 
 Example:
 `HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
+You can also run the container yourself and override the container's command to run a different process:
+`docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -w /var/www -e XDEBUG_ENABLED=true -e PROJECT_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"`
 
 ## Built-in Stack
 * [Alpine Linux 3.8 (:3.8)](https://hub.docker.com/_/alpine/)
