@@ -54,15 +54,15 @@ You can also run the container yourself and override the container's command to 
 Since the application runs inside the container, all commands that affect the application have to be executed there. To do so, run `docker exec -it {{projectName}} /bin/sh -c "{command}"`.
 For example, to run an Artisan command, run `docker exec -it {{projectName}} /bin/sh -c "php artisan {command}"`
 
-## Watch assets
-To watch the assets (i.e. to see the compiled changes instantly reflect after every change) run `docker exec -it -w /var/www {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"`
-
 ## Update dependencies
 Whenever you want to update the dependencies, delete the lock files (`composer.lock` and `package-lock.json`), run the project again (with `up.sh` or `local.up.sh`)(this will update the dependencies and write the lock file inside the container) and extract the lock files from inside the container with:
 ```
 $ docker cp {{projectName}}:/var/www/composer.lock $PWD/composer.lock
 $ docker cp {{projectName}}:/var/www/package-lock.json $PWD/package-lock.json
 ```
+
+## Watch assets
+To watch the assets (i.e. to see the compiled changes instantly reflect after every change) run `docker exec -it -w /var/www {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"`
 
 ## Xdebug support
 Even though the project runs inside a Docker container, it still provides support for debugging with Xdebug. By telling Xdebug the remote location of your IDE and configuring this one to listen to certain port, they can communicate with one another.
