@@ -1,6 +1,6 @@
 {
     "name": "gbmcarlos/skellington",
-    "version": "3.1",
+    "type": "project",
     "license": "MIT",
     "require": {
         "php": "^7.2",
