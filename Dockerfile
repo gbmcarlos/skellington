@@ -1,142 +1,80 @@
-FROM php:7.2-apache-stretch
+FROM php:7.2-fpm-alpine3.8
 
 LABEL maintainer="gbmcarlos@gmail.com"
 
-### System dependencies
-#### git and zip are necessary to use composer
-#### gnupg2 is necessary to setup node later with curl
-RUN     set -ex \
-    &&  apt-get update \
-    &&  apt-get upgrade -y \
-    &&  apt-get -yq install \
-            autoconf \
-            gnupg2 \
-            git \
-            zip \
-    && rm -rf /var/lib/apt/lists/*
+## SYSTEM DEPENDENCIES
+### vim and bash are utilities, so that we can work inside the container
+### apache2-utils is necessary to use htpasswd to encrypt the password for basic auth
+### $PHPIZE_DEPS contains the dependencies to use phpize, which is required to install with pecl
+### supervisor, nginx and node+npm are part of the stack
+### gettext is necessary to replace environment variables in the nginx config file at run time, for the basic auth
+RUN     apk update \
+    &&  apk add \
+            bash \
+            vim \
+            gettext \
+            apache2-utils \
+            supervisor \
+            nginx=1.14.0-r1 \
+            nodejs=8.11.4-r0 \
+            nodejs-npm=8.11.4-r0 \
+            $PHPIZE_DEPS
 
-### PHP extensions
-#### Install both opcache and xdebug regardles of the environment (regardless of the env vars), they will be enabled or disabled later
+## PHP EXTENSIONS
+### Install xdebug but don't enable it, it will be enabled at run time if needed
 RUN     set -ex \
     &&  pecl install \
-            xdebug-stable \
+            xdebug-2.6.1 \
     &&  docker-php-ext-install \
-            pdo \
             pdo_mysql \
-            opcache \
-    &&  docker-php-ext-enable \
-            xdebug
-
-### Configure PHP
-#### https://secure.php.net/manual/en/opcache.installation.php#opcache.installation.recommended
-#### If OPTIMIZE_PHP set the error reporting settings and the setting OPCache
-#### If not OPTIMIZE_PHP, set the error reporting settings and delete the .ini config file for OPCache that was created by the docker-php-ext-install script
-ARG OPTIMIZE_PHP=false
-RUN if \
-        [ $OPTIMIZE_PHP = "true" ] ; \
-    then \
-            echo '\
-display_errors=Off\n\
-display_startup_errors=Off\n\
-error_reporting=E_ALL\n\
-log_errors=On' >> /usr/local/etc/php/php.ini \
-        &&  echo '\
-opcache.memory_consumption=Off\n\
-opcache.interned_strings_buffer=Off\n\
-opcache.max_accelerated_files=Off\n\
-opcache.revalidate_freq=Off\n\
-opcache.fast_shutdown=Off\n\
-opcache.enable_cli=On' >> /usr/local/etc/php/conf.d/opcache.ini; \
-    else \
-            echo '\
-display_errors=STDOUT\n\
-display_startup_errors=On\n\
-error_reporting=E_ALL\n\
-log_errors=On' >> /usr/local/etc/php/php.ini \
-        &&  rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini; \
-    fi
-
-### NodeJS and NPM
-#### https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-RUN     curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-    &&  apt-get -y install nodejs
-
-COPY ./package.* /var/www/
-RUN npm install
-
-### Composer install
-COPY ./composer.* /var/www/
-RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
-
-### Apache2 configuration
-RUN a2enmod rewrite
-COPY deploy/scripts/000-default.conf /etc/apache2/sites-available/000-default.conf
-ARG BASIC_AUTH_ENABLED=false
-ENV BASIC_AUTH_ENABLED $BASIC_AUTH_ENABLED
-ARG BASIC_AUTH_USER
-ARG BASIC_AUTH_PASSWORD
-RUN if \
-        [ $BASIC_AUTH_ENABLED = "true" ] ; \
-    then \
-        htpasswd -cb -B -C 10 /etc/apache2/.htpasswd $BASIC_AUTH_USER $BASIC_AUTH_PASSWORD; \
-    fi
-
-### Source code
-COPY ./src /var/www/src
+            opcache
 
 WORKDIR /var/www
 
-### Composer optimize
-ARG OPTIMIZE_COMPOSER=false
-RUN if \
-        [ $OPTIMIZE_COMPOSER = "true" ] ; \
-    then \
-        php composer.phar dump-autoload -v --working-dir=/var/www --optimize --classmap-authoritative; \
-    else \
-        php composer.phar dump-autoload -v --working-dir=/var/www; \
-    fi
+## SCRIPTS
+### Make sure all scripts have execution permissions
+COPY ./deploy/scripts/* /var/www/
+RUN chmod +x /var/www/*.sh
 
-### Storage folders permissions
-#TODO FIGURE the 777 OUT
-RUN     chown -R www-data:www-data /var/www/src/storage/ \
-    &&  chmod 777 /var/www/src/bootstrap/cache
+## NPM
+COPY ./package.* /var/www/
+RUN npm install
 
-### Compile assets
-COPY ./webpack.mix.js /var/www/webpack.mix.js
-ARG OPTIMIZE_ASSETS=false
-RUN if \
-        [ $OPTIMIZE_ASSETS = "true" ] ; \
-    then \
-        node_modules/webpack/bin/webpack.js --hide-modules -p --config=node_modules/laravel-mix/setup/webpack.config.js; \
-    else \
-        node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js; \
-    fi
+## COMPOSER
+### So far, we are just going to install the dependencies, so no need to dump the autoloader yet
+RUN /var/www/install-composer.sh --quiet
+COPY ./composer.* /var/www/
+RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
 
-### XDebug support
-#### If XDEBUG_ENABLED set the settings for Xdebug
-#### If not XDEBUG_ENABLED, delete the .ini config file that was created by the docker-php-ext-enable script
-ARG XDEBUG_ENABLED=false
-ARG XDEBUG_REMOTE_HOST
-ARG XDEBUG_REMOTE_PORT
-ARG XDEBUG_IDE_KEY
-RUN if \
-        [ $XDEBUG_ENABLED = "true" ] ; \
-    then \
-        echo '\
-xdebug.remote_host='$XDEBUG_REMOTE_HOST'\n\
-xdebug.remote_port='$XDEBUG_REMOTE_PORT'\n\
-xdebug.idekey='$XDEBUG_IDE_KEY'\n\
-xdebug.remote_enable=1\n\
-xdebug.remote_autostart=1\n\
-xdebug.remote_connect_back=off\n\
-xdebug.max_nesting_level=1500' >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    else \
-        rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    fi
+## SOURCE CODE
+COPY ./src /var/www/src
 
-# Expose 80 by default
+## PERMISSIONS
+### create www user and group for nginx
+### set the permission for the temp folder of nginx
+### set permission for the storage folder
+RUN     adduser -D -g 'www' www \
+    &&  chown -R www:www /var/tmp/nginx \
+    &&  chown -R www:www src/storage \
+    &&  chown -R www:www src/bootstrap/cache
+
+## COMPOSER AUTOLOADER
+### Now that we've copied the source code, dump the autoloader
+### By default, optimize the autoloader
+RUN php /var/www/composer.phar dump-autoload -v --optimize --classmap-authoritative;
+
+## AGGREGATE ASSETS
+### by default, optimize the aggregation of assets
+COPY ./webpack.mix.js webpack.mix.js
+RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p;
+
+## CONFIGURATION FILES
+### php, php-fpm, nginx and supervisor config files
+COPY ./deploy/config/php.ini /usr/local/etc/php/php.ini
+COPY ./deploy/config/php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY ./deploy/config/nginx.conf /etc/nginx/nginx.conf
+COPY ./deploy/config/supervisor.conf /etc/supervisor.conf
+
 EXPOSE 80
 
-WORKDIR /var/www/src
-
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+CMD ["/var/www/entrypoint.sh"]

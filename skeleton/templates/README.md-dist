@@ -1,5 +1,5 @@
 # {{projectName}}
-Created from `gbmcarlos/{{projectName}}` as a composer skeleton (`composer create-project`)
+Created from `gbmcarlos/skellington` as a composer skeleton (`composer create-project`)
 
 ## Requirements
 * Docker
@@ -21,38 +21,48 @@ Also it makes all changes on those folders reflect instantly inside the containe
 
 Running `./deploy/local.up.sh` will also automatically tail the output of the container.
 
+## Start-up scripts provided
+* `up.sh`: (supposed to tun on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
+* `local.up.sh`: (supposed to tun on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
+* `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
+* `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the web service (start nginx and php-fpm through supervisord) (this is the default entry point of the Docker container)
+
 ## Environment variables available
-These environment variables are used and given a default value only in the `up.sh` and `local.up.sh` scripts as part of the docker `build` and `run` commands. If you build the docker image and run the docker container on your own, make sure to pass the values to those commands accordingly.
+These environment variables are given a default value in the `up.sh` and `local.up.sh` (host) scripts, and also in the `configure.sh` and `entrypoint.sh` (container) scripts. The default value in any of the host scripts will override the default value in the container scripts.
 
 |       ENV VAR        |                 Default value                 | Description |
 | -------------------- | --------------------------------------------- | ----------- |
-| PROJECT_NAME         | Name of the project's root folder             | Used to name the docker image and docker container from the `up.sh` files |
-| HOST_PORT            | 80                                            | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through |
-| OPTIMIZE_PHP         | `true` for `up.sh`, `false` for `local.up.sh` | Set PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache) (build argument only) |
-| OPTIMIZE_COMPOSER    | `true` for `up.sh`, `false` for `local.up.sh` | Optimize Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps) (build argument only) |
-| OPTIMIZE_ASSETS      | `true` for `up.sh`, `false` for `local.up.sh` | Optimize assets compilation (build argument only) |
-| BASIC_AUTH_ENABLED   | `true` for `up.sh`, `false` for `local.up.sh` | Enable Basic Authentication with Apache (Persisted environment variable) |
-| BASIC_AUTH_USER      | admin                                         | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10) (build argument only) |
-| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                       | If `BASIC_AUTH_ENABLED` is `true`, this will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10) (build argument only) |
-| XDEBUG_ENABLED       | `false` for `up.sh`, `true` for `local.up.sh` | Enables Xdebug inside the container. More information on how to configure your system below. (build argument only) |
-| XDEBUG_REMOTE_HOST   | 10.254.254.254                                | Used as the `xdebug.remote_host` PHP ini configuration value (build argument only) |
-| XDEBUG_REMOTE_PORT   | 9000                                          | Used as the `xdebug.remote_port` PHP ini configuration value (build argument only) |
-| XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                       | Used as the `xdebug.idekey` PHP ini configuration value (build argument only) |
+| PROJECT_NAME         | Name of the project's root folder (`localhost` in the host container scripts)  | Used to name the docker image and docker container from the `up.sh` files, and as the name server in nginx. |
+| HOST_PORT            | 80                                                                             | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through. |
+| OPTIMIZE_PHP         | `true` (`false` in `local.up.sh`)                                              | Sets PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache). |
+| OPTIMIZE_COMPOSER    | `true` (`false` in `local.up.sh`)                                              | Optimizes Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps). |
+| OPTIMIZE_ASSETS      | `true` (`false` in `local.up.sh`)                                              | Optimizes assets compilation. |
+| BASIC_AUTH_ENABLED   | `true` (`false` in `local.up.sh`)                                              | Enables Basic Authentication with Apache. |
+| BASIC_AUTH_USER      | admin                                                                          | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10). |
+| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                                                        | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10). |
+| XDEBUG_ENABLED       | `false` (`true` in `local.up.sh`)                                              | Enables Xdebug inside the container. |
+| XDEBUG_REMOTE_HOST   | 10.254.254.254                                                                 | Used as the `xdebug.remote_host` PHP ini configuration value. |
+| XDEBUG_REMOTE_PORT   | 9000                                                                           | Used as the `xdebug.remote_port` PHP ini configuration value. |
+| XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                                                        | Used as the `xdebug.idekey` PHP ini configuration value. |
 
 Example:
 `HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
+You can also run the container yourself and override the container's command to run a different process instead of the normal application and web server:
+`docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -w /var/www -e XDEBUG_ENABLED=true -e PROJECT_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"`
 
 ## Running commands
-Since the application runs inside the container, all commands have to be executed there. To do so, run `docker exec -it {{projectName}} /bin/sh -c "{command}"`.
-For example, to run a Artisan command, run `docker exec -it {{projectName}} /bin/sh -c "php artisan"`
+Since the application runs inside the container, all commands that affect the application have to be executed there. To do so, run `docker exec -it {{projectName}} /bin/sh -c "{command}"`.
+For example, to run an Artisan command, run `docker exec -it {{projectName}} /bin/sh -c "php artisan {command}"`
 
 ## Watch assets
-To watch the assets (see the compiled changes instantly reflect after every change) run `docker exec -it -w /var/www {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"`
+To watch the assets (i.e. to see the compiled changes instantly reflect after every change) run `docker exec -it -w /var/www {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"`
 
-## Update dependencies (extract lock files)
-Composer lock: `docker cp {{projectName}}:/var/www/composer.lock $PWD/composer.lock`
-
-NPM lock: `docker cp {{projectName}}:/var/www/package-lock.json $PWD/package-lock.json`
+## Update dependencies
+Whenever you want to update the dependencies, delete the lock files (`composer.lock` and `package-lock.json`), run the project again (with `up.sh` or `local.up.sh`)(this will update the dependencies and write the lock file inside the container) and extract the lock files from inside the container with:
+```
+$ docker cp {{projectName}}:/var/www/composer.lock $PWD/composer.lock
+$ docker cp {{projectName}}:/var/www/package-lock.json $PWD/package-lock.json
+```
 
 ## Xdebug support
 Even though the project runs inside a Docker container, it still provides support for debugging with Xdebug. By telling Xdebug the remote location of your IDE and configuring this one to listen to certain port, they can communicate with one another.
@@ -66,10 +76,9 @@ Use the `XDEBUG_` environment variables and the path mappings:
 * "vendor" -> `/var/www/vendor`
 
 ## Built-in Stack
-* [Debian (:stretch slim)](https://hub.docker.com/_/debian/)
-* Apache 2
-* [PHP 7.2.8 (:7.2-apache-stretch)](https://hub.docker.com/_/php/)
-* [Xdebug 2.6](https://xdebug.org/)
+* [Alpine Linux 3.8 (:stretch slim)](https://hub.docker.com/_/alpine/)
+* [Nginx 1.14.1](http://nginx.org/)
+* [PHP 7.2.8 (:7.2-fpm-alpine)](https://hub.docker.com/_/php/)
+* [Xdebug 2.6.1](https://xdebug.org/)
 * [Laravel 5.6](https://laravel.com/docs/5.6/)
-* jQuery 3.2
-* Bootstrap 4.1
+* [Node.js 8.11.4](https://nodejs.org/en/docs/)
