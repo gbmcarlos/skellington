@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Shared\Middlewares\CheckLocaleMiddleware;
 use Illuminate\Foundation\Http\Kernel as BaseHttpKernel;
 
 class HttpKernel extends BaseHttpKernel
@@ -52,6 +53,7 @@ class HttpKernel extends BaseHttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'locale' => CheckLocaleMiddleware::class
     ];
 }
