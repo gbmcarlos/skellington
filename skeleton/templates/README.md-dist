@@ -70,7 +70,7 @@ Even though the project runs inside a Docker container, it still provides suppor
 Use the `XDEBUG_` environment variables to configure your project's debugging.
 
 ### Xdebug for PhpStorm on Mac
-Check [this documentation](https://gist.github.com/gbmcarlos/f90bef184873c46c6186880b3d633ff6), sections "Configuring PhpStorm" and "Configuring MacOS". to configure your IDE and system.
+Check [this documentation](https://gist.github.com/gbmcarlos/77614789be8a6ecc1dc3aec4b49c07bc), sections "Configuring PhpStorm" and "Configuring MacOS". to configure your IDE and system.
 Use the `XDEBUG_` environment variables and the path mappings:
 * "src" -> `/var/www/src`
 * "vendor" -> `/var/www/vendor`
