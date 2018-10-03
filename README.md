@@ -3,7 +3,7 @@ This skeleton allows to have a working Laravel application running inside a Dock
 
 ## Features
 * Run as a [Docker](https://docs.docker.com/) container: one dependency, one tool, Docker.
-* [Laravel 5.6](https://laravel.com/docs/5.6) application.
+* [Laravel 5.7](https://laravel.com/docs/5.7) application.
 * Xdebug support
 * Multiple start-up scripts provided
     * `up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
@@ -52,7 +52,7 @@ You can also run the container yourself and override the container's command to 
 * [Nginx 1.14.1](http://nginx.org/)
 * [PHP 7.2.8 (:7.2-fpm-alpine3.8)](https://hub.docker.com/_/php/)
 * [Xdebug 2.6.1](https://xdebug.org/)
-* [Laravel 5.6](https://laravel.com/docs/5.6/)
+* [Laravel 5.7](https://laravel.com/docs/5.7/)
 * [Node.js 8.11.4](https://nodejs.org/en/docs/)
 
 ## License

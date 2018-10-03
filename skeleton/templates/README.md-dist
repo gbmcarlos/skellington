@@ -57,8 +57,8 @@ For example, to run an Artisan command, run `docker exec -it {{projectName}} /bi
 ## Update dependencies
 Whenever you want to update the dependencies, delete the lock files (`composer.lock` and `package-lock.json`), run the project again (with `up.sh` or `local.up.sh`)(this will update the dependencies and write the lock file inside the container) and extract the lock files from inside the container with:
 ```
-$ docker cp {{projectName}}:/var/www/composer.lock $PWD/composer.lock
-$ docker cp {{projectName}}:/var/www/package-lock.json $PWD/package-lock.json
+$ docker cp {{projectName}}:/var/www/composer.lock .
+$ docker cp {{projectName}}:/var/www/package-lock.json .
 ```
 
 ## Watch assets
@@ -80,5 +80,5 @@ Use the `XDEBUG_` environment variables and the path mappings:
 * [Nginx 1.14.1](http://nginx.org/)
 * [PHP 7.2.8 (:7.2-fpm-alpine)](https://hub.docker.com/_/php/)
 * [Xdebug 2.6.1](https://xdebug.org/)
-* [Laravel 5.6](https://laravel.com/docs/5.6/)
+* [Laravel 5.7](https://laravel.com/docs/5.7/)
 * [Node.js 8.11.4](https://nodejs.org/en/docs/)
