@@ -35,8 +35,8 @@ These environment variables are given a default value in the `up.sh` and `local.
 | OPTIMIZE_COMPOSER    | `true` (`false` in `local.up.sh`)                                         | Optimizes Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps). |
 | OPTIMIZE_ASSETS      | `true` (`false` in `local.up.sh`)                                         | Optimizes assets compilation. |
 | BASIC_AUTH_ENABLED   | `true` (`false` in `local.up.sh`)                                         | Enables Basic Authentication with Nginx. |
-| BASIC_AUTH_USER      | admin                                                                     | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10). |
-| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                                                   | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_USER` to encrypt with bcrypt (cost 10). |
+| BASIC_AUTH_USERNAME  | admin                                                                     | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10). |
+| BASIC_AUTH_PASSWORD  | `PROJECT_NAME`_password                                                   | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_USERNAME` to encrypt with bcrypt (cost 10). |
 | XDEBUG_ENABLED       | `false` (`true` in `local.up.sh`)                                         | Enables Xdebug inside the container. |
 | XDEBUG_REMOTE_HOST   | 10.254.254.254                                                            | Used as the `xdebug.remote_host` PHP ini configuration value. |
 | XDEBUG_REMOTE_PORT   | 9000                                                                      | Used as the `xdebug.remote_port` PHP ini configuration value. |
@@ -44,7 +44,7 @@ These environment variables are given a default value in the `up.sh` and `local.
 
 Example:
 ```
-HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USER=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh
+HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh
 ```  
 You can also run the container yourself and override the container's command to run a different process:
 ```
