@@ -38,7 +38,7 @@ fi
 if
     [ ${OPTIMIZE_COMPOSER} != "true" ] ;
 then
-    php composer.phar dump-autoload -v ;
+    php /var/www/composer.phar dump-autoload -v ;
 fi
 
 ## OPTIMIZE ASSETS
@@ -47,7 +47,7 @@ fi
 if
     [ ${OPTIMIZE_ASSETS} != "true" ] ;
 then
-    node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js ;
+    /var/www/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/www/node_modules/laravel-mix/setup/webpack.config.js ;
 fi
 
 # ENABLE XDEBUG

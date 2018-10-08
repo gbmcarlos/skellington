@@ -37,7 +37,7 @@ COPY ./deploy/scripts/* /var/www/
 RUN chmod +x /var/www/*.sh
 
 ## NPM
-COPY ./package.* /var/www/
+COPY ./package* /var/www/
 RUN npm install
 
 ## COMPOSER
