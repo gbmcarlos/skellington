@@ -8,10 +8,18 @@
 
 namespace App\Acme\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+
 class HelloWorldController {
 
-    public function helloWorld() {
-        return view('hello_world');
+    public function helloWorld(Request $request, string $name) {
+
+        $locale = App::getLocale();
+
+        $greeting = __('greeting', ['name' => $name]);
+
+        return $greeting;
     }
 
 }

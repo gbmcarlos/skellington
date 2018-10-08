@@ -15,7 +15,7 @@ class RoutesServiceProvider extends RouteServiceProvider {
 
     public function map() {
 
-        Route::get('/', 'App\Acme\Controllers\HelloWorldController@helloWorld')->name('hello-world');
+        Route::get('/hello/{name}', 'App\Acme\Controllers\HelloWorldController@helloWorld')->name('hello-world')->middleware('locale');
 
     }
 
