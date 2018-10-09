@@ -57,8 +57,8 @@ For example, to run an Artisan command, run `docker exec -it {{projectName}} /bi
 ## Update dependencies
 Whenever you want to update the dependencies, delete the lock files (`composer.lock` and `package-lock.json`), run the project again (with `up.sh` or `local.up.sh`)(this will update the dependencies and write the lock file inside the container) and extract the lock files from inside the container with:
 ```
-$ docker cp {{projectName}}:/var/www/composer.lock .
-$ docker cp {{projectName}}:/var/www/package-lock.json .
+docker cp {{projectName}}:/var/www/composer.lock .
+docker cp {{projectName}}:/var/www/package-lock.json .
 ```
 
 ## Watch assets
