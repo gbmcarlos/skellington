@@ -38,7 +38,7 @@ fi
 if
     [ ${OPTIMIZE_COMPOSER} != "true" ] ;
 then
-    php /var/www/composer.phar dump-autoload -v ;
+    composer dump-autoload -v ;
 fi
 
 ## OPTIMIZE ASSETS

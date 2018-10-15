@@ -41,10 +41,14 @@ COPY ./package* /var/www/
 RUN npm install
 
 ## COMPOSER
+### Install composer by copying the binary from composer's official image (compressed multi-stage)
 ### So far, we are just going to install the dependencies, so no need to dump the autoloader yet
-RUN /var/www/install-composer.sh --quiet
+### At the end, remove the root's composer folder that was used to install and use prestissimo
+COPY --from=composer:1.7.2 /usr/bin/composer /usr/bin/composer
 COPY ./composer.* /var/www/
-RUN php /var/www/composer.phar install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev
+RUN     composer global require hirak/prestissimo \
+    &&  composer install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev \
+    &&  rm -rf /root/.composer
 
 ## SOURCE CODE
 COPY ./src /var/www/src
@@ -61,7 +65,7 @@ RUN     adduser -D -g 'www' www \
 ## COMPOSER AUTOLOADER
 ### Now that we've copied the source code, dump the autoloader
 ### By default, optimize the autoloader
-RUN php /var/www/composer.phar dump-autoload -v --optimize --classmap-authoritative;
+RUN composer dump-autoload -v --optimize --classmap-authoritative;
 
 ## AGGREGATE ASSETS
 ### by default, optimize the aggregation of assets
