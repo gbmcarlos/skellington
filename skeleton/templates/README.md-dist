@@ -52,7 +52,7 @@ You can also run the container yourself and override the container's command to 
 
 ## Running commands
 Since the application runs inside the container, all commands that affect the application have to be executed there. To do so, run `docker exec -it {{projectName}} /bin/sh -c "{command}"`.
-For example, to run an Artisan command, run `docker exec -it {{projectName}} /bin/sh -c "php src/artisan {command}"`
+For example, to run an Artisan command, run `docker exec -it {{projectName}} /bin/sh -c "src/artisan {command}"`
 
 ## Update dependencies
 Whenever you want to update the dependencies, delete the lock files (`composer.lock` and `package-lock.json`), run the project again (with `up.sh` or `local.up.sh`)(this will update the dependencies and write the lock file inside the container) and extract the lock files from inside the container with:
@@ -70,7 +70,7 @@ docker exec -it {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js 
 ## Update Application Key
 The application key is a random string of at least 32 characters that Laravel uses to encrypt the sessions. To generate a new application key, run:
 ```bash
-docker exec {{projectName}} /bin/sh -c "php src/artisan key:generate --show"
+docker exec {{projectName}} /bin/sh -c "src/artisan key:generate --show"
 ```
 Then you can copy the result into your `.env` as the value of the variable `APP_KEY`
 

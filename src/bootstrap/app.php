@@ -17,6 +17,4 @@ $app->singleton(
     Illuminate\Foundation\Exceptions\Handler::class
 );
 
-date_default_timezone_set(\Illuminate\Support\Facades\Config::get('app.timezone'));
-
 return $app;
