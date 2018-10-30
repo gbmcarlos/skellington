@@ -47,7 +47,7 @@ fi
 if
     [ ${OPTIMIZE_ASSETS} != "true" ] ;
 then
-    /var/www/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/www/node_modules/laravel-mix/setup/webpack.config.js ;
+    node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js ;
 fi
 
 # ENABLE XDEBUG

@@ -42,6 +42,6 @@ docker run \
     -v $PWD/../vendor:/var/www/vendor \
     -v $PWD/../node_modules:/var/www/node_modules \
     ${PROJECT_NAME}:latest \
-    /bin/sh -c "cd /var/www && composer install -v --working-dir=/var/www --no-suggest --no-dev && npm install && /var/www/entrypoint.sh"
+    /bin/sh -c "composer install -v --no-suggest --no-dev && npm install && ./entrypoint.sh"
 
 docker logs -f ${PROJECT_NAME}

@@ -5,19 +5,15 @@ LABEL maintainer="gbmcarlos@gmail.com"
 ## SYSTEM DEPENDENCIES
 ### vim and bash are utilities, so that we can work inside the container
 ### apache2-utils is necessary to use htpasswd to encrypt the password for basic auth
-### $PHPIZE_DEPS contains the dependencies to use phpize, which is required to install with pecl
-### supervisor, nginx and node+npm are part of the stack
 ### gettext is necessary to replace environment variables in the nginx config file at run time, for the basic auth
+### supervisor, nginx and node+npm are part of the stack
+### $PHPIZE_DEPS contains the dependencies to use phpize, which is required to install with pecl
 RUN     apk update \
     &&  apk add \
-            bash \
-            vim \
-            gettext \
-            apache2-utils \
-            supervisor \
-            nginx=1.14.0-r1 \
-            nodejs=8.11.4-r0 \
-            nodejs-npm=8.11.4-r0 \
+            bash vim \
+            gettext apache2-utils \
+            supervisor nginx=1.14.0-r1 \
+            nodejs=8.11.4-r0 nodejs-npm=8.11.4-r0 \
             $PHPIZE_DEPS
 
 ## PHP EXTENSIONS
@@ -33,11 +29,11 @@ WORKDIR /var/www
 
 ## SCRIPTS
 ### Make sure all scripts have execution permissions
-COPY ./deploy/scripts/* /var/www/
-RUN chmod +x /var/www/*.sh
+COPY ./deploy/scripts/* ./
+RUN chmod +x ./*.sh
 
 ## NPM
-COPY ./package* /var/www/
+COPY ./package* ./
 RUN npm install
 
 ## COMPOSER
@@ -45,18 +41,18 @@ RUN npm install
 ### So far, we are just going to install the dependencies, so no need to dump the autoloader yet
 ### At the end, remove the root's composer folder that was used to install and use prestissimo
 COPY --from=composer:1.7.2 /usr/bin/composer /usr/bin/composer
-COPY ./composer.* /var/www/
-RUN     composer global require hirak/prestissimo \
-    &&  composer install -v --working-dir=/var/www --no-autoloader --no-suggest --no-dev \
+COPY ./composer.* ./
+RUN     composer global require hirak/prestissimo:0.3.8 \
+    &&  composer install -v --no-autoloader --no-suggest --no-dev \
     &&  rm -rf /root/.composer
 
 ## SOURCE CODE
-COPY ./src /var/www/src
+COPY ./src ./src
 
 ## PERMISSIONS
-### create www user and group for nginx
-### set the permission for the temp folder of nginx
-### set permission for the storage folder
+### Create www user and group for nginx
+### Set the permission for the temp folder of nginx
+### Set permission for the storage folder
 RUN     adduser -D -g 'www' www \
     &&  chown -R www:www /var/tmp/nginx \
     &&  chown -R www:www src/storage \
@@ -68,7 +64,7 @@ RUN     adduser -D -g 'www' www \
 RUN composer dump-autoload -v --optimize --classmap-authoritative;
 
 ## AGGREGATE ASSETS
-### by default, optimize the aggregation of assets
+### By default, optimize the aggregation of assets
 COPY ./webpack.mix.js webpack.mix.js
 RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p;
 
@@ -81,4 +77,4 @@ COPY ./deploy/config/supervisor.conf /etc/supervisor.conf
 
 EXPOSE 80
 
-CMD ["/var/www/entrypoint.sh"]
+CMD ["./entrypoint.sh"]

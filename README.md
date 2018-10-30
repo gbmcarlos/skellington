@@ -48,7 +48,7 @@ HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSW
 ```  
 You can also run the container yourself and override the container's command to run a different process:
 ```
-docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -w /var/www -e XDEBUG_ENABLED=true -e PROJECT_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"
+docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -e XDEBUG_ENABLED=true -e PROJECT_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"
 ```
 
 ## Built-in Stack

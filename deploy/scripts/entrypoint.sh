@@ -13,7 +13,7 @@ export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=9000}
 export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${PROJECT_NAME}_PHPSTORM}
 
 # Configure according to the OPTIMIZE_ BASIC_AUTH_ and XDEBUG_ env vars
-/bin/sh /var/www/configure.sh
+/bin/sh ./configure.sh
 
 # Start supervisord. This will, in turn, start php-fpm and nginx
 supervisord -n -c /etc/supervisor.conf
