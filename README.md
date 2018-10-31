@@ -43,11 +43,11 @@ These environment variables are given a default value in the `up.sh` and `local.
 | XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                                                   | Used as the `xdebug.idekey` PHP ini configuration value. |
 
 Example:
-```
+```bash
 HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh
 ```  
-You can also run the container yourself and override the container's command to run a different process:
-```
+You can also run the container yourself and override the container's command to run a different process instead of the normal application and web server:
+```bash
 docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -e XDEBUG_ENABLED=true -e PROJECT_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"
 ```
 

@@ -46,9 +46,13 @@ These environment variables are given a default value in the `up.sh` and `local.
 | XDEBUG_IDE_KEY       | `PROJECT_NAME`_PHPSTORM                                                        | Used as the `xdebug.idekey` PHP ini configuration value. |
 
 Example:
-`HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh`
+```bash
+HOST_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh
+```
 You can also run the container yourself and override the container's command to run a different process instead of the normal application and web server:
-`docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -e XDEBUG_ENABLED=true -e PROJECT_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"`
+```bash
+docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -e XDEBUG_ENABLED=true -e PROJECT_NAME={{projectName}} -e OPTIMIZE_ASSETS=false {{projectName}}:latest /bin/sh -c "/var/www/configure.sh && php -i"
+```
 
 ## Running commands
 Since the application runs inside the container, all commands that affect the application have to be executed there. To do so, run `docker exec -it {{projectName}} /bin/sh -c "{command}"`.
@@ -56,7 +60,7 @@ For example, to run an Artisan command, run `docker exec -it {{projectName}} /bi
 
 ## Update dependencies
 Whenever you want to update the dependencies, delete the lock files (`composer.lock` and `package-lock.json`), run the project again (with `up.sh` or `local.up.sh`)(this will update the dependencies and write the lock file inside the container) and extract the lock files from inside the container with:
-```
+```bash
 docker cp {{projectName}}:/var/www/composer.lock .
 docker cp {{projectName}}:/var/www/package-lock.json .
 ```
