@@ -27,6 +27,7 @@ docker run \
     --name ${PROJECT_NAME} \
     -d \
     -p ${HOST_PORT}:80 \
+    -e APP_DEBUG=true \
     -e PROJECT_NAME \
     -e OPTIMIZE_PHP \
     -e OPTIMIZE_COMPOSER \

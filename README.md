@@ -27,8 +27,8 @@ This skeleton allows to have a working Laravel application running inside a Dock
 ## Environment variables available
 These environment variables are given a default value in the `up.sh` and `local.up.sh` (host) scripts, and also in the `configure.sh` and `entrypoint.sh` (container) scripts. The default value in any of the host scripts will override the default value in the container scripts.
 
-|       ENV VAR        |                 Default value                 | Description |
-| -------------------- | --------------------------------------------- | ----------- |
+|       ENV VAR        |                 Default value                 |         Description       |
+| -------------------- | --------------------------------------------- | ------------------------- |
 | PROJECT_NAME         | Name of the project's root folder (`localhost` in the container scripts)  | Used to name the docker image and docker container from the `up.sh` files, and as the name server in nginx. |
 | HOST_PORT            | 80                                                                        | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through. |
 | OPTIMIZE_PHP         | `true` (`false` in `local.up.sh`)                                         | Sets PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache). |

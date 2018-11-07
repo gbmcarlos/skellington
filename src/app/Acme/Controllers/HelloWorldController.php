@@ -13,11 +13,9 @@ use Illuminate\Support\Facades\App;
 
 class HelloWorldController {
 
-    public function helloWorld(Request $request, string $name) {
+    public function helloWorld(Request $request) {
 
-        $locale = App::getLocale();
-
-        $greeting = __('greeting', ['name' => $name]);
+        $greeting = __('greeting', ['name' => 'World']);
 
         return $greeting;
     }

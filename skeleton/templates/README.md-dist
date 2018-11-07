@@ -30,8 +30,8 @@ Running `./deploy/local.up.sh` will also automatically tail the output of the co
 ## Environment variables available
 These environment variables are given a default value in the `up.sh` and `local.up.sh` (host) scripts, and also in the `configure.sh` and `entrypoint.sh` (container) scripts. The default value in any of the host scripts will override the default value in the container scripts.
 
-|       ENV VAR        |                 Default value                 | Description |
-| -------------------- | --------------------------------------------- | ----------- |
+|       ENV VAR        |                 Default value                 |           Description          |
+| -------------------- | --------------------------------------------- | ------------------------------ |
 | PROJECT_NAME         | Name of the project's root folder (`localhost` in the host container scripts)  | Used to name the docker image and docker container from the `up.sh` files, and as the name server in nginx. |
 | HOST_PORT            | 80                                                                             | The port Docker will use as the host port in the network bridge. This is the external port, the one your app will be called through. |
 | OPTIMIZE_PHP         | `true` (`false` in `local.up.sh`)                                              | Sets PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache). |
@@ -71,7 +71,7 @@ To watch the assets (see the compiled changes instantly reflect after every chan
 docker exec -it {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"
 ```
 
-## Update Application Key
+## Update Application Encryption Key
 The application key is a random string of at least 32 characters that Laravel uses to encrypt the sessions. To generate a new application key, run:
 ```bash
 docker exec {{projectName}} /bin/sh -c "src/artisan key:generate --show"
