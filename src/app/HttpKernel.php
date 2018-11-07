@@ -55,6 +55,7 @@ class HttpKernel extends Kernel
      * @var array
      */
     protected $routeMiddleware = [
+        'locale' => CheckLocaleMiddleware::class,
         'auth' => Authenticate::class,
         'bindings' => SubstituteBindings::class,
         'cache.headers' => SetCacheHeaders::class,
