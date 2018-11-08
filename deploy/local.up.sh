@@ -43,6 +43,6 @@ docker run \
     -v $PWD/../vendor:/var/www/vendor \
     -v $PWD/../node_modules:/var/www/node_modules \
     ${PROJECT_NAME}:latest \
-    /bin/sh -c "composer install -v --no-suggest --no-dev && npm install && ./entrypoint.sh"
+    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && npm install && ./entrypoint.sh"
 
 docker logs -f ${PROJECT_NAME}

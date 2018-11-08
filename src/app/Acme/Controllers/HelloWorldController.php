@@ -9,7 +9,6 @@
 namespace App\Acme\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 
 class HelloWorldController {
 

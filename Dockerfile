@@ -27,11 +27,6 @@ RUN     set -ex \
 
 WORKDIR /var/www
 
-## SCRIPTS
-### Make sure all scripts have execution permissions
-COPY ./deploy/scripts/* ./
-RUN chmod +x ./*.sh
-
 ## NPM
 COPY ./package* ./
 RUN npm install
@@ -43,7 +38,7 @@ RUN npm install
 COPY --from=composer:1.7.2 /usr/bin/composer /usr/bin/composer
 COPY ./composer.* ./
 RUN     composer global require hirak/prestissimo:0.3.8 \
-    &&  composer install -v --no-autoloader --no-suggest --no-dev \
+    &&  composer install -v --no-autoloader --no-suggest --no-dev --no-interaction --no-ansi \
     &&  rm -rf /root/.composer
 
 ## SOURCE CODE
@@ -61,12 +56,12 @@ RUN     adduser -D -g 'www' www \
 ## COMPOSER AUTOLOADER
 ### Now that we've copied the source code, dump the autoloader
 ### By default, optimize the autoloader
-RUN composer dump-autoload -v --optimize --classmap-authoritative;
+RUN composer dump-autoload -v --classmap-authoritative --no-dev --no-interaction --no-ansi
 
 ## AGGREGATE ASSETS
 ### By default, optimize the aggregation of assets
 COPY ./webpack.mix.js webpack.mix.js
-RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p;
+RUN node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js -p
 
 ## CONFIGURATION FILES
 ### php, php-fpm, nginx and supervisor config files
@@ -74,6 +69,11 @@ COPY ./deploy/config/php.ini /usr/local/etc/php/php.ini
 COPY ./deploy/config/php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY ./deploy/config/nginx.conf /etc/nginx/nginx.conf
 COPY ./deploy/config/supervisor.conf /etc/supervisor.conf
+
+## SCRIPTS
+### Make sure all scripts have execution permissions
+COPY ./deploy/scripts/* ./
+RUN chmod +x ./*.sh
 
 EXPOSE 80
 
