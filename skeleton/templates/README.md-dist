@@ -14,7 +14,7 @@ To spin up the Docker container (build the image and run the container), just ru
 TL;DR: run `./deploy/local.up.sh` once and start coding.
 
 When developing in a local environment, just run `./deploy/local.up.sh`.
-This will build the image and run the container normally, but mounting volumes for the source and vendors folders.
+This will build the image and run the container normally, but mounting volumes for the source and vendor folders.
 
 By mounting volumes on those folders, it makes the dependencies (installed only inside the container) available outside the container (so available to your IDE).
 Also it makes all changes on those folders reflect instantly inside the container, so there is no need to re-deploy.
@@ -25,7 +25,7 @@ Running `./deploy/local.up.sh` will also automatically tail the output of the co
 * `up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
 * `local.up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
 * `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
-* `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the web service (start nginx and php-fpm through supervisord) (this is the default entry point of the Docker container)
+* `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the service (nginx and php-fpm) (this is the default entry point of the Docker container)
 
 ## Environment variables available
 These environment variables are given a default value in the `up.sh` and `local.up.sh` (host) scripts, and also in the `configure.sh` and `entrypoint.sh` (container) scripts. The default value in any of the host scripts will override the default value in the container scripts.
@@ -71,7 +71,7 @@ To watch the assets (see the compiled changes instantly reflect after every chan
 docker exec -it {{projectName}} /bin/sh -c "node_modules/webpack/bin/webpack.js --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --watch"
 ```
 
-## Update Application Encryption Key
+## Generate application encryption key
 The application key is a random string of at least 32 characters that Laravel uses to encrypt the sessions. To generate a new application key, run:
 ```bash
 docker exec {{projectName}} /bin/sh -c "src/artisan key:generate --show"

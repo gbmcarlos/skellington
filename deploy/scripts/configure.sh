@@ -79,5 +79,5 @@ then
 else
     export BASIC_AUTH_ENABLED=off ;
 fi
-envsubst '${BASIC_AUTH_ENABLED}${PROJECT_NAME}' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
-mv /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
+envsubst '${BASIC_AUTH_ENABLED}${PROJECT_NAME}' < /usr/local/etc/nginx.conf > /usr/local/etc/nginx.conf.tmp
+mv /usr/local/etc/nginx.conf.tmp /usr/local/etc/nginx.conf

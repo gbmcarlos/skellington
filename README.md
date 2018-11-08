@@ -9,7 +9,7 @@ This skeleton allows to have a working Laravel application running inside a Dock
     * `up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
     * `local.up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
     * `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
-    * `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the web service (start nginx and php-fpm through supervisord) (this is the default entry point of the Docker container)
+    * `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the service (nginx and php-fpm) (this is the default entry point of the Docker container)
 * Configure the run-time environment with environment variables
     * Optimize multiple aspects of your application for production with `OPTIMIZE_` env vars
     * Set Basic Authentication with `BASIC_AUTH_` env vars
