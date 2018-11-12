@@ -8,6 +8,7 @@ return [
     'timezone' => env('TZ', 'UTC') ?: 'UTC',
     'fallback_locale' => env('FALLBACK_LOCALE', 'en_GB'),
     'available_locales' => env('AVAILABLE_LOCALES', 'en_GB'),
+    'revision' => env('REVISION', 'latest'),
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'providers' => [

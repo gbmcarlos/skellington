@@ -6,6 +6,7 @@ cd "$(dirname "$0")"
 
 export HOST_PORT=${HOST_PORT:=80}
 export PROJECT_NAME=${PROJECT_NAME:=$(basename $(dirname $PWD))}
+export REVISION=${REVISION:=$(git rev-parse HEAD)}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=true}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=true}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=true}
@@ -18,6 +19,7 @@ export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=9000}
 export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${PROJECT_NAME}_PHPSTORM}
 
 docker build \
+    --build-arg REVISION \
     -t ${PROJECT_NAME}:latest \
     ./..
 

@@ -72,6 +72,9 @@ COPY ./deploy/config/* /usr/local/etc/
 COPY ./deploy/scripts/* ./
 RUN chmod +x ./*.sh
 
+ARG REVISION=latest
+ENV REVISION $REVISION
+
 EXPOSE 80
 
 CMD ["./entrypoint.sh"]

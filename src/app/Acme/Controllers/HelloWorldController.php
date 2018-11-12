@@ -9,6 +9,7 @@
 namespace App\Acme\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class HelloWorldController {
 
@@ -16,7 +17,10 @@ class HelloWorldController {
 
         $greeting = __('greeting', ['name' => 'World']);
 
-        return $greeting;
+        return [
+            'greeting' => $greeting,
+            'revision' => Config::get('app.revision')
+        ];
     }
 
 }
