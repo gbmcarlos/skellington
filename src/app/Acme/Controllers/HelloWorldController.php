@@ -19,7 +19,7 @@ class HelloWorldController {
 
         return [
             'greeting' => $greeting,
-            'revision' => Config::get('app.revision')
+            'release' => Config::get('app.release')
         ];
     }
 

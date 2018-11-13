@@ -16,15 +16,15 @@ class SkeletonTemplateReplacer {
 
     public static function run(Event $event) {
 
-        $projectName = self::getProjectName($event);
+        $appName = self::getAppName($event);
 
         self::replaceTemplates(array(
-            '{{projectName}}' => $projectName
+            '{{appName}}' => $appName
         ));
 
     }
 
-    private static function getProjectName(Event $event) : string {
+    private static function getAppName(Event $event) : string {
         return basename(getcwd());
     }
 

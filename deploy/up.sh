@@ -4,33 +4,33 @@ set -ex
 
 cd "$(dirname "$0")"
 
-export HOST_PORT=${HOST_PORT:=80}
-export PROJECT_NAME=${PROJECT_NAME:=$(basename $(dirname $PWD))}
-export REVISION=${REVISION:=$(git rev-parse HEAD)}
+export APP_PORT=${APP_PORT:=80}
+export APP_NAME=${APP_NAME:=$(basename $(dirname $PWD))}
+export APP_RELEASE=${APP_RELEASE:=$(git rev-parse HEAD)}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=true}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=true}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=true}
 export BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED:=true}
 export BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME:=admin}
-export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${PROJECT_NAME}_password}
+export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${APP_NAME}_password}
 export XDEBUG_ENABLED=${XDEBUG_ENABLED:=false}
 export XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST:=10.254.254.254}
 export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=9000}
-export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${PROJECT_NAME}_PHPSTORM}
+export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${APP_NAME}_PHPSTORM}
 
 docker build \
-    --build-arg REVISION \
-    -t ${PROJECT_NAME}:latest \
+    --build-arg APP_RELEASE \
+    -t ${APP_NAME}:latest \
     ./..
 
-docker rm -f ${PROJECT_NAME} || true
+docker rm -f ${APP_NAME} || true
 
 docker run \
-    --name ${PROJECT_NAME} \
+    --name ${APP_NAME} \
     -d \
-    -p ${HOST_PORT}:80 \
-    -e HOST_PORT \
-    -e PROJECT_NAME \
+    -p ${APP_PORT}:80 \
+    -e APP_PORT \
+    -e APP_NAME \
     -e OPTIMIZE_PHP \
     -e OPTIMIZE_COMPOSER \
     -e OPTIMIZE_ASSETS \
@@ -41,4 +41,4 @@ docker run \
     -e XDEBUG_REMOTE_HOST \
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
-    ${PROJECT_NAME}:latest
+    ${APP_NAME}:latest

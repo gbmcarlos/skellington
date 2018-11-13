@@ -72,8 +72,10 @@ COPY ./deploy/config/* /usr/local/etc/
 COPY ./deploy/scripts/* ./
 RUN chmod +x ./*.sh
 
-ARG REVISION=latest
-ENV REVISION $REVISION
+## ENV VARS
+### A release is a version of your code that is deployed to an environment.
+ARG APP_RELEASE=latest
+ENV APP_RELEASE $APP_RELEASE
 
 EXPOSE 80
 

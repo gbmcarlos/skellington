@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-export HOST_PORT=${HOST_PORT:=80}
-export PROJECT_NAME=${PROJECT_NAME=localhost}
+export APP_PORT=${APP_PORT:=80}
+export APP_NAME=${APP_NAME=localhost}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=true}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=true}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=true}
 export BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED:=true}
 export BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME:=admin}
-export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${PROJECT_NAME}_password}
+export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${APP_NAME}_password}
 export XDEBUG_ENABLED=${XDEBUG_ENABLED:=false}
 export XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST:=10.254.254.254}
 export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=9000}
-export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${PROJECT_NAME}_PHPSTORM}
+export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${APP_NAME}_PHPSTORM}
 
 # Configure according to the OPTIMIZE_ BASIC_AUTH_ and XDEBUG_ env vars
 /bin/sh ./configure.sh
@@ -38,7 +38,7 @@ PHP_FPM_PID=$!
 
 trap "TRAPPED_SIGNAL=true; kill -15 ${NGINX_PID}; kill -15 ${PHP_FPM_PID};" SIGTERM SIGINT
 
-echo ${PROJECT_NAME} 'ready. Listening at port' ${HOST_PORT};
+echo ${APP_NAME} 'ready. Listening at port' ${APP_PORT};
 
 #
 while :

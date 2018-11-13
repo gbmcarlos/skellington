@@ -4,34 +4,34 @@ set -ex
 
 cd "$(dirname "$0")"
 
-export HOST_PORT=${HOST_PORT:=80}
-export PROJECT_NAME=${PROJECT_NAME:=$(basename $(dirname $PWD))}
-export REVISION=${REVISION:=latest}
+export APP_PORT=${APP_PORT:=80}
+export APP_NAME=${APP_NAME:=$(basename $(dirname $PWD))}
+export APP_RELEASE=${APP_RELEASE:=latest}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=false}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=false}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=false}
 export BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED:=false}
 export BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME:=admin}
-export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${PROJECT_NAME}_password}
+export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${APP_NAME}_password}
 export XDEBUG_ENABLED=${XDEBUG_ENABLED:=true}
 export XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST:=10.254.254.254}
 export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=9000}
-export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${PROJECT_NAME}_PHPSTORM}
+export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${APP_NAME}_PHPSTORM}
 
 docker build \
-    --build-arg REVISION \
-    -t ${PROJECT_NAME}:latest \
+    --build-arg APP_RELEASE \
+    -t ${APP_NAME}:latest \
     ./..
 
-docker rm -f ${PROJECT_NAME} || true
+docker rm -f ${APP_NAME} || true
 
 docker run \
-    --name ${PROJECT_NAME} \
+    --name ${APP_NAME} \
     -d \
-    -p ${HOST_PORT}:80 \
+    -p ${APP_PORT}:80 \
     -e APP_DEBUG=true \
-    -e HOST_PORT \
-    -e PROJECT_NAME \
+    -e APP_PORT \
+    -e APP_NAME \
     -e OPTIMIZE_PHP \
     -e OPTIMIZE_COMPOSER \
     -e OPTIMIZE_ASSETS \
@@ -45,7 +45,7 @@ docker run \
     -v $PWD/../src:/var/www/src \
     -v $PWD/../vendor:/var/www/vendor \
     -v $PWD/../node_modules:/var/www/node_modules \
-    ${PROJECT_NAME}:latest \
+    ${APP_NAME}:latest \
     /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && npm install && ./entrypoint.sh"
 
-docker logs -f ${PROJECT_NAME}
+docker logs -f ${APP_NAME}

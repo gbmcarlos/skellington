@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-export PROJECT_NAME=${PROJECT_NAME=localhost}
+export APP_NAME=${APP_NAME=localhost}
 export OPTIMIZE_PHP=${OPTIMIZE_PHP:=true}
 export OPTIMIZE_COMPOSER=${OPTIMIZE_COMPOSER:=true}
 export OPTIMIZE_ASSETS=${OPTIMIZE_ASSETS:=true}
 export BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED:=true}
 export BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME:=admin}
-export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${PROJECT_NAME}_password}
+export BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:=${APP_NAME}_password}
 export XDEBUG_ENABLED=${XDEBUG_ENABLED:=false}
 export XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST:=10.254.254.254}
 export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=9000}
-export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${PROJECT_NAME}_PHPSTORM}
+export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${APP_NAME}_PHPSTORM}
 
 ## OPTIMIZE PHP
 ### https://secure.php.net/manual/en/opcache.installation.php#opcache.installation.recommended
@@ -79,5 +79,5 @@ then
 else
     export BASIC_AUTH_ENABLED=off ;
 fi
-envsubst '${BASIC_AUTH_ENABLED}${PROJECT_NAME}' < /usr/local/etc/nginx.conf > /usr/local/etc/nginx.conf.tmp
+envsubst '${BASIC_AUTH_ENABLED}${APP_NAME}' < /usr/local/etc/nginx.conf > /usr/local/etc/nginx.conf.tmp
 mv /usr/local/etc/nginx.conf.tmp /usr/local/etc/nginx.conf

@@ -1,5 +1,5 @@
 {
-    "name": "{{projectName}}",
+    "name": "{{appName}}",
     "require": {
         "php": "^7.2",
         "fideloper/proxy": "^4.0",

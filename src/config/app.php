@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'project_name' => env('PROJECT_NAME', 'lumen'),
+    'project_name' => env('APP_NAME', 'lumen'),
     'env' => env('APP_ENV', 'dev'),
     'debug' => env('APP_DEBUG', false),
     'url' => env('APP_URL', 'http://localhost'),
     'timezone' => env('TZ', 'UTC') ?: 'UTC',
     'fallback_locale' => env('FALLBACK_LOCALE', 'en_GB'),
     'available_locales' => env('AVAILABLE_LOCALES', 'en_GB'),
-    'revision' => env('REVISION', 'latest'),
+    'release' => env('APP_RELEASE', 'latest'),
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'providers' => [
