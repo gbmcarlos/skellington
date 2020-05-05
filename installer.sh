@@ -5,20 +5,14 @@ if [ "$#" -lt 1 ]; then
 Usage: curl -L https://raw.githubusercontent.com/gbmcarlos/skellington/master/installer.sh | bash /dev/stdin <project name> [<GitHub username>]
 This script will create a new project next to the current one named after the first arguments passed.
 These are the steps this scripts will take:
-1. Copy the folder of the current project next to it, with the new name
+1. Download Skellington's tarball and untar it in a folder named after the first parameter
 2. Delete a few files and folders
-3. Update references to the old project's name
-4. Give the new project a new binding HTTP port based on your input
-5. Create the initial commit
-6. Install Crossbow
-7. Install the project's dependencies
+3. Update references to the new project name
+4. Initialize the git repo (with a remote if the GitHub username is provded) and commit an empty README
+6. Install Toolkit
+7. Install the project's dependencies, by running local/standalone.sh, and extract composer.lock
 
-After this script runs, you have a new project ready to push to a Github repository.
-Remind your DevOps to:
-1. Create a private Github repository for the new project, with the same name
-2. Create the staging and production environments and pipeline for the project
-3. Create the Sentry project
-4. Add the projects resources utilization to the dashboard
+After this script runs, you have a new project ready to run and to push to a Github repository.
 End-of-message
 exit 2
 fi
