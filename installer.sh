@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 1 ]; then
     cat <<End-of-message
-Usage: curl -s -L https://raw.githubusercontent.com/gbmcarlos/skellington/master/installer.sh | bash /dev/stdin <project name> [<GitHub username>]
+Usage: curl -s -L https://raw.githubusercontent.com/gbmcarlos/skellington/lumen/installer.sh | bash /dev/stdin <project name> [<GitHub username>]
 This script will create a new project next to the current one named after the first arguments passed.
 These are the steps this scripts will take:
 1. Download Skellington's tarball and untar it in a folder named after the first parameter
@@ -34,7 +34,7 @@ echo "Downloading Skellington repo..."
 mkdir ${PROJECT_NAME} && cd ${PROJECT_NAME}
 
 # Download Skellington's tarball and untar in the new folder
-curl -s -L https://github.com/gbmcarlos/skellington/tarball/master | tar xz --strip 1
+curl -s -L https://github.com/gbmcarlos/skellington/tarball/lumen | tar xz --strip 1
 
 echo "Preparing ${PROJECT_NAME}..."
 
