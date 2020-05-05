@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-export APP_PORT=${APP_PORT:=9898}
+export APP_PORT=${APP_PORT:=80}
 export APP_NAME=${APP_NAME:=$(basename $(dirname $PWD))}
 export APP_RELEASE=${APP_RELEASE:=latest}
 export BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED:=false}
