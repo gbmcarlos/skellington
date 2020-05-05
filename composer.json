@@ -2,7 +2,7 @@
     "name": "ekar/skellington",
     "require": {
         "php": "7.4.*",
-        "laravel/lumen-framework": "^6.1",
+        "laravel/framework": "^6.1",
         "vlucas/phpdotenv": "^3.6",
         "guzzlehttp/guzzle": "^6.3"
     },

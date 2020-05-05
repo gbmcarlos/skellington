@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "name": "odin",
+    "version": "1.0.0",
+    "dependencies": {
+        "laravel-mix": "^5.0.0",
+        "vue": "^2.6.10",
+        "vue-router": "^3.1.3"
+    },
+    "devDependencies": {
+        "vue-template-compiler": "^2.6.10"
+    }
+}

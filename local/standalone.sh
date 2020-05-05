@@ -21,6 +21,7 @@ fi
 
 docker build \
     -f ./../src/toolkit/Dockerfile \
+    --target php-node \
     -t toolkit:latest \
     ./../src/toolkit
 
@@ -30,6 +31,12 @@ docker build \
     ./..
 
 docker rm -f ${APP_NAME} || true
+
+entrypoint_command="set -ex"
+entrypoint_command+="; npm install"
+entrypoint_command+="; /var/task/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/task/node_modules/laravel-mix/setup/webpack.config.js"
+entrypoint_command+="; composer install -v --no-suggest --no-dev --no-interaction --no-ansi"
+entrypoint_command+="; bin/up.sh"
 
 docker run \
     --name ${APP_NAME} \
@@ -47,8 +54,9 @@ docker run \
     -e XDEBUG_IDE_KEY \
     -v $PWD/../src:/var/task/src \
     -v $PWD/../vendor:/var/task/vendor \
+    -v $PWD/../node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
-    /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && bin/up.sh"
+    /bin/sh -c "${entrypoint_command}"
 
 if [ "$quiet" != true ] ; then
     docker logs -f ${APP_NAME}
