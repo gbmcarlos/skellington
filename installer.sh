@@ -19,6 +19,11 @@ fi
 
 PROJECT_NAME=$1
 
+if [ -d ${NEW_COMPONENT_NAME} ]; then
+    echo "Folder with name '${NEW_COMPONENT_NAME}' already exists"
+    exit 2
+fi
+
 if [ ! -z "$2" ]; then
     GITHUB_USERNAME=$2
 fi
