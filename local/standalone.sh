@@ -14,10 +14,10 @@ export XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT:=10000}
 export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${APP_NAME}_PHPSTORM}
 
 if [ "$1" == "--quiet" ]; then
-	quiet=true
+	  quiet=true
+else
+    set -ex
 fi
-
-set -ex
 
 docker build \
     -f ./../src/toolkit/Dockerfile \
@@ -33,7 +33,7 @@ docker rm -f ${APP_NAME} || true
 
 docker run \
     --name ${APP_NAME} \
-    -it \
+    -d \
     -p ${APP_PORT}:80 \
     -e APP_DEBUG=true \
     -e APP_PORT \
