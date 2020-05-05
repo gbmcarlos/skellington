@@ -73,7 +73,7 @@ git add .gitmodules
 git add src/toolkit
 git commit -m "Installed Toolkit" > /dev/null
 
-echo "Installing Composer dependencies..."
+echo "Installing Composer and NPM dependencies..."
 
 # Deploy locally and extract composer.lock
 ./local/standalone.sh --quiet > /dev/null
