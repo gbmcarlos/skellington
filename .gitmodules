@@ -1,4 +1,4 @@
-[submodule "src/toolkit"]
+[submodule "toolkit"]
 	path = src/toolkit
 	url = git@github.com:gbmcarlos/toolkit.git
 	branch = master
