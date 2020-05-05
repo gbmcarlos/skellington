@@ -15,9 +15,9 @@ export XDEBUG_IDE_KEY=${XDEBUG_IDE_KEY:=${APP_NAME}_PHPSTORM}
 
 if [ "$1" == "--quiet" ]; then
 	  quiet=true
+else
+    set -ex
 fi
-
-set -ex
 
 docker build \
     -f ./../src/toolkit/Dockerfile \
