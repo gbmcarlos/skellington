@@ -19,8 +19,8 @@ fi
 
 PROJECT_NAME=$1
 
-if [ -d ${NEW_COMPONENT_NAME} ]; then
-    echo "Folder with name '${NEW_COMPONENT_NAME}' already exists"
+if [ -d ${PROJECT_NAME} ]; then
+    echo "Folder with name '${PROJECT_NAME}' already exists"
     exit 2
 fi
 
