@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "odin",
+    "name": "skellington",
     "version": "1.0.0",
     "dependencies": {
         "laravel-mix": "^5.0.0",

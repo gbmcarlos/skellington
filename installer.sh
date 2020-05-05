@@ -45,6 +45,7 @@ rm -rf src/toolkit
 # Replace with the new project name
 sed -i '' -e "s/skellington/${PROJECT_NAME}/g" config/nginx.conf
 sed -i '' -e "s/skellington/${PROJECT_NAME}/g" composer.json
+sed -i '' -e "s/skellington/${PROJECT_NAME}/g" package.json
 
 # Initialize the git repo
 ## Set the remote if a GitHub username was provided
@@ -77,6 +78,7 @@ echo "Installing Composer dependencies..."
 # Deploy locally and extract composer.lock
 ./local/standalone.sh --quiet > /dev/null
 docker cp ${PROJECT_NAME}:/var/task/composer.lock .
+docker cp ${PROJECT_NAME}:/var/task/package-lock.json .
 git add composer.lock
 git commit -m "Installed composer dependencies" > /dev/null
 
