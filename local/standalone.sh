@@ -21,6 +21,7 @@ fi
 
 docker build \
     -f ./../src/toolkit/Dockerfile \
+    --target php \
     -t toolkit:latest \
     ./../src/toolkit
 
