@@ -6,4 +6,4 @@ src/bootstrap/cache/*.php
 node_modules
 vendor
 src/.env
-storage
+src/storage
