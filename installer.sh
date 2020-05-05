@@ -20,6 +20,7 @@ Remind your DevOps to:
 3. Create the Sentry project
 4. Add the projects resources utilization to the dashboard
 End-of-message
+exit 2
 fi
 
 PROJECT_NAME=$1
