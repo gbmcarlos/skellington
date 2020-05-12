@@ -1,9 +1,9 @@
 # What's this?
-This skeleton allows to have a working Laravel application running inside a Docker container completely out of the box, and configurable through environment variables.
+This skeleton allows to have a working Laravel or Lumen application running inside a Docker container completely out of the box, and configurable through environment variables.
 
 ## Features
 * Run as a [Docker](https://docs.docker.com/) container: one dependency, one tool, Docker.
-* [Laravel 5.7](https://laravel.com/docs/5.7) application.
+* [Lumen 7](https://lumen.laravel.com/docs/7.x) application.
 * Xdebug support
 * Multiple start-up scripts provided
     * `up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
@@ -11,54 +11,141 @@ This skeleton allows to have a working Laravel application running inside a Dock
     * `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
     * `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the service (nginx and php-fpm) (this is the default entry point of the Docker container)
 * Configure the run-time environment with environment variables
-    * Optimize multiple aspects of your application for production with `OPTIMIZE_` env vars
-    * Set Basic Authentication with `BASIC_AUTH_` env vars
     * Debug in your local with `XDEBUG_` env vars
 
 ## How to install it
-* This skeleton is available as a [composer package in packagist.org](https://packagist.org/packages/gbmcarlos/skellington), so you only need to run `composer create-project --remove-vcs --no-install --ignore-platform-reqs gbmcarlos/skellington target-directory 4.0.*` with the name of the folder where you want to create the project
-* After that, just `cd` into the project folder and start a new repository with `git init` and add your new remote with `git remote add origin {new_remote}`
+* `curl -s -L https://raw.githubusercontent.com/gbmcarlos/skellington/{branch}/installer.sh | bash /dev/stdin <project name> [<GitHub username>]`. Replace `{branch}` by the variant you want, namely, `laravel` or `lumen`
 * Start working
+
+# Setup
 
 ## Requirements
 * Docker
-* To install it in the way stated above you will need PHP and Composer. ([Here](https://getcomposer.org/download/)'s how to get composer)
 
-## Environment variables available
-These environment variables are given a default value in the `up.sh` and `local.up.sh` (host) scripts, and also in the `configure.sh` and `entrypoint.sh` (container) scripts. The default value in any of the host scripts will override the default value in the container scripts.
+## Environment variables
 
-|       ENV VAR        |                 Default value                 |         Description       |
-| -------------------- | --------------------------------------------- | ------------------------- |
-| APP_PORT             | 80                                                                        | The port Docker will use as the host port in the network bridge. This is the external port, the one you will use to call your app. |
-| APP_NAME             | Name of the project's root folder (`localhost` in the container scripts)  | Used to name the docker image and docker container from the `up.sh` files, and as the name server in nginx. |
-| APP_RELEASE          | Current commit's hash (`latest` in `local.up.sh`)                         | Used at build time to persist the environment variable into the image. When deploying with `up.sh`, it's the hash of the current commit (`HEAD`) |
-| OPTIMIZE_PHP         | `true` (`false` in `local.up.sh`)                                         | Sets PHP's configuration values about error reporting and display [the right way](https://www.phptherightway.com/#error_reporting) and enables [OPCache](https://secure.php.net/book.opcache). |
-| OPTIMIZE_COMPOSER    | `true` (`false` in `local.up.sh`)                                         | Optimizes Composer's autoload with [Optimization Level 2/A](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps). |
-| OPTIMIZE_ASSETS      | `true` (`false` in `local.up.sh`)                                         | Optimizes assets compilation. |
-| BASIC_AUTH_ENABLED   | `true` (`false` in `local.up.sh`)                                         | Enables Basic Authentication with Nginx. |
-| BASIC_AUTH_USERNAME  | admin                                                                     | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_PASSWORD` to encrypt with bcrypt (cost 10). |
-| BASIC_AUTH_PASSWORD  | `APP_NAME`_password                                                       | If `BASIC_AUTH_ENABLED` is `true`, it will be used to run `htpasswd` together with `BASIC_AUTH_USERNAME` to encrypt with bcrypt (cost 10). |
-| XDEBUG_ENABLED       | `false` (`true` in `local.up.sh`)                                         | Enables Xdebug inside the container. |
-| XDEBUG_REMOTE_HOST   | 10.254.254.254                                                            | Used as the `xdebug.remote_host` PHP ini configuration value. |
-| XDEBUG_REMOTE_PORT   | 9000                                                                      | Used as the `xdebug.remote_port` PHP ini configuration value. |
-| XDEBUG_IDE_KEY       | `APP_NAME`_PHPSTORM                                                       | Used as the `xdebug.idekey` PHP ini configuration value. |
+Every project reads its environment variables from the file `src/.env`, which is not tracked in the repository by git. A list of the required environment variables is kept in the file `src/.env.example`.
 
-Example:
+## Crossbow
+
+This project makes use of gbmcarlos/toolkit as a library, which is installed as a git submodule.
+
+## Development
+
+### Web service
+
+When working on the web service, use `./local/standalone.sh`. This script will:
+
+* build the Docker image
+* run the Docker container, mounting volumes for the source and vendor folders. This will:
+  * make the dependencies \(installed only inside the container\) visible to your IDE.
+  * make all changes on those folders reflect instantly inside the container
+* spin up the web server
+* tail the output of the container
+
+### Background process
+
+When working on a background process, use `./local/run.sh {pipelineName}`. This script will do the same as `standalone.sh`, but instead of spinning up the web server, it will run the specified Artisan command with the given options. For example
+
 ```bash
-APP_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./deploy/local.up.sh
-```  
-You can also run the container yourself and override the container's command to run a different process instead of the normal application and web server:
-```bash
-docker run --name background-process --rm -v $PWD/src:/var/www/src --rm -e XDEBUG_ENABLED=true -e APP_NAME=skellington -e OPTIMIZE_ASSETS=false skellington:latest /bin/sh -c "/var/www/configure.sh && php -i"
+./local/run.sh my-command
 ```
 
-## Built-in Stack
-* [Alpine Linux 3.8 (:3.8)](https://hub.docker.com/_/alpine/)
-* [Nginx 1.14.1](http://nginx.org/)
-* [PHP 7.2.8 (:7.2-fpm-alpine3.8)](https://hub.docker.com/_/php/)
-* [Xdebug 2.6.1](https://xdebug.org/)
-* [Laravel 5.7](https://laravel.com/docs/5.7/)
-* [Node.js 8.11.4](https://nodejs.org/en/docs/)
+## Configuration environment variables
+
+These environment variables are used to configure how the project is built and ran, and they are given a default value optimized for production in the Dockerfile. `./local/standalone.sh` gives them a default value optimized for local development which overrides the one in the Dockerfile.
+
+| ENV VAR | Default value \(production \| local\) | Description |
+| :--- | :--- | :--- |
+| APP\_PORT | 80 | The port Docker will use as the host port in the network bridge. This is the external port, the one you will use to call your app. |
+| APP\_DEBUG | `true` | Use to toggle the application debug configuration |
+| APP\_NAME | Name of the project's root folder | Used to name the docker image and docker container. |
+| APP\_RELEASE | Current commit hash \(`HEAD`\) / `latest` | Used at build time to persist the environment variable into the image. |
+| BASIC\_AUTH\_ENABLED | `true` / `false` | Enables Basic Authentication with Nginx. If enabled, it will use `htpasswd` with `BASIC_AUTH_USERNAME` and `BASIC_AUTH_PASSWORD` to encrypt with bcrypt \(cost 10\). |
+| BASIC\_AUTH\_USERNAME | admin | Username for the Basic Auth |
+| BASIC\_AUTH\_PASSWORD | `APP_NAME`\_password | Password for the Basic Auth |
+| XDEBUG\_ENABLED | `false` / `true` | Enables Xdebug inside the container. |
+| XDEBUG\_REMOTE\_HOST | host.docker.internal | Used as the `xdebug.remote_host` PHP ini configuration value. |
+| XDEBUG\_REMOTE\_PORT | 10000 | Used as the `xdebug.remote_port` PHP ini configuration value. |
+| XDEBUG\_IDE\_KEY | `APP_NAME`\_PHPSTORM | Used as the `xdebug.idekey` PHP ini configuration value. |
+
+```bash
+APP_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./local/standalone.sh
+```
+
+## Running commands
+
+To run a arbitrary command inside your web service container, you can do so with:
+
+```bash
+docker exec -it {container-name} bash -c "{command}"
+```
+
+Or you can execute an interactive terminal in the container with:
+
+```bash
+docker exec -it {container-name} bash
+```
+
+You can also run any artisan command by executing the `src/server.php` file:
+
+```bash
+docker exec -it {container-name} bash -c "php src/server.php {command}"
+```
+
+## Installing a new package
+
+When installing a new package let Composer choose the exact version by running `composer require {package}` inside the container \(see the "Running commands" section\). Then extract the `composer.json` and `composer.lock` from inside the container \(see the "Updating dependencies" section\).
+
+## Updating dependencies
+
+To update the dependencies, run `composer update` inside the web service container \(see the "Running commands" section\). Then extract the `composer.lock` file with:
+
+```bash
+docker cp {container-name}:/var/task/composer.lock .
+```
+
+### Updating NPM dependencies \(Laravel only\)
+
+To update the NPM dependencies, run `npm update` inside the web service container \(see the "Running commands" section\). Then extract the `package-lock.json` file with:
+
+```bash
+docker cp {container-name}:/var/www/package-lock.json .
+```
+
+## Watch assets \(Laravel only\)
+
+To watch the assets \(i.e. to have your assets files be compiled after every change\) you just need to run `./local/watch-assets.sh`
+
+## Update Application Key \(Laravel only\)
+
+The application key is a random string of at least 32 characters that Laravel uses to encrypt the sessions. To generate a new application key, run:
+
+```bash
+docker exec {container-name} /bin/sh -c "php src/server.php key:generate --show"
+```
+
+Then you can copy the result into your `.env` as the value of the variable `APP_KEY`
+
+## Xdebug support
+
+Even though the project runs inside a Docker container, it still provides support for debugging with Xdebug. By telling Xdebug the remote location of your IDE and configuring this one to listen to a certain port, they can communicate with one another.
+
+Use the `XDEBUG_` environment variables to configure your project's debugging. The default values on the local start-up scripts are optimized for PhpStorm on Mac.
+
+### Xdebug for PhpStorm on Mac
+
+Check [this documentation](https://gist.github.com/gbmcarlos/77614789be8a6ecc1dc3aec4b49c07bc) to configure your IDE. Use the `XDEBUG_` and `APP_NAME` environment variables and the path mappings:
+
+* "src": `/var/task/src`
+* "vendor": `/opt/php/vendor`
+
+## Technology Stack
+
+* [Nginx](http://nginx.org/)
+* [PHP 7.4.1](https://php.net/)
+* [Xdebug](https://xdebug.org/)
+* [Lumen 7](https://lumen.laravel.com/docs/7.x)
 
 ## License
 This project is licensed under the terms of the [MIT license](https://opensource.org/licenses/MIT).
