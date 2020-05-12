@@ -10,12 +10,7 @@ class RoutesServiceProvider extends ServiceProvider {
 
     public function boot() {
 
-        Route::group(['prefix' => '/hello'], function () {
-
-            // basic
-            Route::get('/world', HelloWorldController::class . '@helloWorld');
-
-        });
+        Route::get('/', HelloWorldController::class . '@helloWorld');
     }
 
 }

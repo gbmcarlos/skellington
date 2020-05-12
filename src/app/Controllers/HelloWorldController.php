@@ -11,7 +11,7 @@ namespace App\Controllers;
 class HelloWorldController {
 
     public function helloWorld() {
-        return view('layout');
+        return view('pages/hello-world');
     }
 
 }

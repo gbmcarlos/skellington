@@ -1,10 +1,8 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
-import routes from './routes';
+import HelloWorld from './components/HelloWorld';
 
-Vue.use(VueRouter);
+Vue.component('hello-world', HelloWorld);
 
 let app = new Vue({
-    el: '#app',
-    router: new VueRouter(routes)
+    el: '#app'
 });

@@ -2,6 +2,7 @@
 
 cd "$(dirname "$0")"
 
+export DOCKER_BUILDKIT=1
 export APP_PORT=${APP_PORT:=80}
 export APP_NAME=${APP_NAME:=$(basename $(dirname $PWD))}
 export APP_RELEASE=${APP_RELEASE:=latest}
@@ -42,7 +43,6 @@ docker run \
     --name ${APP_NAME} \
     -d \
     -p ${APP_PORT}:80 \
-    -e APP_DEBUG=true \
     -e APP_PORT \
     -e APP_NAME \
     -e BASIC_AUTH_ENABLED \

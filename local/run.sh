@@ -2,6 +2,7 @@
 
 cd "$(dirname "$0")"
 
+export DOCKER_BUILDKIT=1
 export APP_NAME=${APP_NAME:=$(basename $(dirname $PWD))}
 export APP_RELEASE=${APP_RELEASE:=latest}
 export BASIC_AUTH_ENABLED=${BASIC_AUTH_ENABLED:=false}
@@ -16,6 +17,7 @@ set -ex
 
 docker build \
     -f ./../src/toolkit/Dockerfile \
+    --target php-node \
     -t toolkit:latest \
     ./../src/toolkit
 
@@ -28,7 +30,6 @@ docker run \
     --name ${APP_NAME}-pipeline \
     --rm \
     -it \
-    -e APP_DEBUG=true \
     -e APP_NAME \
     -e BASIC_AUTH_ENABLED \
     -e BASIC_AUTH_USERNAME \
