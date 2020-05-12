@@ -14,7 +14,11 @@ return [
     'fallback_locale' => env('FALLBACK_LOCALE', 'en_US'),
     'available_locales' => env('AVAILABLE_LOCALES', 'en_US'),
     'release' => env('APP_RELEASE', 'latest'),
+    'key' => env('APP_KEY'),
+    'cipher' => 'AES-256-CBC',
     'providers' => [
+
         \App\Providers\RoutesServiceProvider::class
+
     ]
 ];
