@@ -2,9 +2,11 @@
     "name": "ekar/skellington",
     "require": {
         "php": "7.4.*",
-        "laravel/lumen-framework": "^6.1",
-        "vlucas/phpdotenv": "^3.6",
-        "guzzlehttp/guzzle": "^6.3"
+        "laravel/lumen-framework": "^7.0",
+        "vlucas/phpdotenv": "^4.1",
+        "guzzlehttp/guzzle": "^6.5",
+        "ext-pcntl": "*",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
