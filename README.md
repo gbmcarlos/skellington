@@ -5,11 +5,9 @@ This skeleton allows to have a working Laravel or Lumen application running insi
 * Run as a [Docker](https://docs.docker.com/) container: one dependency, one tool, Docker.
 * [Lumen 7](https://lumen.laravel.com/docs/7.x) application.
 * Xdebug support
-* Multiple start-up scripts provided
-    * `up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application with configuration values optimized for production using environment variables
-    * `local.up.sh`: (supposed to run on the host, located in `deploy/`) to deploy the application in your development environment, tailing logs and mounting volumes for your source code, to work comfortably
-    * `configure.sh`: (supposed to run inside the Docker container, located in `/var/www`) it configures the run-time environment according to the `OPTIMIZE_`, `XDEBUG_` and `BASIC_AUTH_` environment variables
-    * `entrypoint.sh`: (supposed to run inside the Docker container, located in `/var/www`) executes `configure.sh` and starts the service (nginx and php-fpm) (this is the default entry point of the Docker container)
+* Run it with Make
+    * `make` or `make standalone` will run the project as web service
+    * `make run ARGS={your options}` will execute your arguments as a Artisan command
 * Configure the run-time environment with environment variables
     * Debug in your local with `XDEBUG_` env vars
 

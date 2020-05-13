@@ -10,3 +10,4 @@ src/storage/framework/sessions/*
 src/storage/framework/views/*
 src/public/css/*
 src/public/js/*
+Makefile
