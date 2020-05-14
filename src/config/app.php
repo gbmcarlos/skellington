@@ -18,7 +18,9 @@ return [
     'cipher' => 'AES-256-CBC',
     'providers' => [
 
-        \App\Providers\RoutesServiceProvider::class
+        \App\Providers\RoutesServiceProvider::class,
+
+        \SwooleTW\Http\LumenServiceProvider::class,
 
     ]
 ];

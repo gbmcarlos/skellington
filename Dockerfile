@@ -1,1 +1,1 @@
-FROM toolkit/stack/lumen
+FROM toolkit/stack/swoole

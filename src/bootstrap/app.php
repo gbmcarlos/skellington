@@ -1,12 +1,12 @@
 <?php
 
 try {
-    (Dotenv\Dotenv::createImmutable(__DIR__))->load();
+    (Dotenv\Dotenv::createImmutable(__DIR__ . '/..'))->load();
 } catch (\Dotenv\Exception\InvalidPathException $exception) {
     // ignore if there is no .env
 }
 
-$app = new Laravel\Lumen\Application(__DIR__);
+$app = new Laravel\Lumen\Application(__DIR__ . '/..');
 
 $app->withFacades();
 

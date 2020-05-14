@@ -3,6 +3,7 @@
     "require": {
         "php": "7.4.*",
         "laravel/lumen-framework": "^7.0",
+        "swooletw/laravel-swoole": "^2.6",
         "vlucas/phpdotenv": "^4.1",
         "guzzlehttp/guzzle": "^6.5",
         "ext-pcntl": "*",
@@ -13,5 +14,8 @@
             "App\\": "/var/task/src/app/",
             "Toolkit\\": "/var/task/src/toolkit/"
         }
+    },
+    "require-dev": {
+        "eaglewu/swoole-ide-helper": "dev-master"
     }
 }
