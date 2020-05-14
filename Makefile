@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := standalone
-.PHONY: standalone
+.PHONY: logs
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -43,6 +43,7 @@ standalone: toolkit/swoole
     ${APP_NAME}:latest \
     /bin/sh -c "set -ex && composer install -v --no-suggest --no-interaction --no-ansi && php /var/task/src/server.php swoole:http start"
 
+standalone-logs: standalone
 	docker logs -f ${APP_NAME}
 
 run: toolkit/swoole
