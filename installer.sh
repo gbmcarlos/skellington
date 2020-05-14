@@ -39,11 +39,10 @@ curl -s -L https://github.com/gbmcarlos/skellington/tarball/swoole | tar xz --st
 echo "Preparing ${PROJECT_NAME}..."
 
 # Delete files and folders
-rm -f installer.sh .gitmodules
+rm -f installer.sh .gitmodules composer.lock
 rm -rf src/toolkit
 
 # Replace with the new project name
-sed -i '' -e "s/skellington/${PROJECT_NAME}/g" config/nginx.conf
 sed -i '' -e "s/skellington/${PROJECT_NAME}/g" composer.json
 
 # Initialize the git repo
