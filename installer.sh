@@ -34,7 +34,7 @@ echo "Downloading Skellington repo..."
 mkdir ${PROJECT_NAME} && cd ${PROJECT_NAME}
 
 # Download Skellington's tarball and untar in the new folder
-curl -s -L https://github.com/gbmcarlos/skellington/tarball/lumen | tar xz --strip 1
+curl -s -L https://github.com/gbmcarlos/skellington/tarball/swoole | tar xz --strip 1
 
 echo "Preparing ${PROJECT_NAME}..."
 
