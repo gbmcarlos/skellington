@@ -1,6 +1,6 @@
 SHELL := /bin/bash
-.DEFAULT_GOAL := standalone
-.PHONY: standalone
+.DEFAULT_GOAL := web
+.PHONY: web command lambda
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -17,9 +17,10 @@ export XDEBUG_ENABLED ?= true
 export XDEBUG_REMOTE_HOST ?= host.docker.internal
 export XDEBUG_REMOTE_PORT ?= 10000
 export XDEBUG_IDE_KEY ?= ${APP_NAME}_PHPSTORM
+export MEMORY_LIMIT ?= 3M
 
-standalone: toolkit/lumen
-	docker build -t ${APP_NAME} .
+web: toolkit/lumen
+	docker build -t ${APP_NAME} --target app .
 
 	docker rm -f ${APP_NAME} || true
 
@@ -36,18 +37,18 @@ standalone: toolkit/lumen
     -e XDEBUG_REMOTE_HOST \
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
-    -v ${PROJECT_PATH}/src:/var/task/src \
-    -v ${PROJECT_PATH}/vendor:/var/task/vendor \
+    -v ${PROJECT_PATH}src:/var/task/src \
+    -v ${PROJECT_PATH}vendor:/var/task/vendor \
     ${APP_NAME}:latest \
     /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && bin/up.sh"
 
 	docker logs -f ${APP_NAME}
 
-run: toolkit/lumen
-	docker build -t ${APP_NAME} .
+command: toolkit/lumen
+	docker build -t ${APP_NAME} --target app .
 
 	docker run \
-    --name ${APP_NAME}-bg \
+    --name ${APP_NAME}-command \
     --rm \
     -it \
     -e APP_NAME \
@@ -55,10 +56,24 @@ run: toolkit/lumen
     -e XDEBUG_REMOTE_HOST \
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
-    -v ${PROJECT_PATH}/src:/var/task/src \
-    -v ${PROJECT_PATH}/vendor:/var/task/vendor \
     ${APP_NAME}:latest \
     /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/server.php ${ARGS}"
 
+lambda: toolkit/lumen
+	docker build -t ${APP_NAME} --target lambda .
+
+	cat ${PROJECT_PATH}src/lambda-payload.json | docker run \
+    --name ${APP_NAME}-lambda \
+    --rm \
+    -i \
+    -e APP_NAME \
+    -e XDEBUG_ENABLED \
+    -e XDEBUG_REMOTE_HOST \
+    -e XDEBUG_REMOTE_PORT \
+    -e XDEBUG_IDE_KEY \
+    -e DOCKER_LAMBDA_USE_STDIN=1 \
+    ${APP_NAME}:latest \
+	${ARGS}
+
 toolkit/lumen:
-	cd src/toolkit/Docker ; make lumen
+	cd src/toolkit/Docker ; make stack/lumen

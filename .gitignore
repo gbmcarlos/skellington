@@ -7,3 +7,4 @@ src/storage/views
 node_modules
 vendor
 src/.env
+src/lambda-payload.json

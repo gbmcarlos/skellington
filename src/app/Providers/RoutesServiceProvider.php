@@ -11,6 +11,7 @@ class RoutesServiceProvider extends ServiceProvider {
     public function boot() {
 
         Route::get('/', HelloWorldController::class . '@helloWorld');
+
     }
 
 }
