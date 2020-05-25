@@ -1,6 +1,6 @@
 SHELL := /bin/bash
-.DEFAULT_GOAL := standalone
-.PHONY: standalone test
+.DEFAULT_GOAL := web
+.PHONY: web command watch-assets
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -16,6 +16,7 @@ export XDEBUG_ENABLED ?= true
 export XDEBUG_REMOTE_HOST ?= host.docker.internal
 export XDEBUG_REMOTE_PORT ?= 10000
 export XDEBUG_IDE_KEY ?= ${APP_NAME}_PHPSTORM
+export MEMORY_LIMIT ?= 128M
 
 ENTRYPOINT_COMMAND := set -ex
 ENTRYPOINT_COMMAND += ; npm install
@@ -23,8 +24,8 @@ ENTRYPOINT_COMMAND += ; /var/task/node_modules/webpack/bin/webpack.js --hide-mod
 ENTRYPOINT_COMMAND += ; composer install -v --no-suggest --no-dev --no-interaction --no-ansi
 ENTRYPOINT_COMMAND += ; bin/up.sh
 
-standalone: toolkit/laravel
-	docker build -t ${APP_NAME} .
+web: toolkit/laravel
+	docker build -t ${APP_NAME} --target app .
 
 	docker rm -f ${APP_NAME} || true
 
@@ -41,9 +42,9 @@ standalone: toolkit/laravel
     -e XDEBUG_REMOTE_HOST \
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
-    -v ${PROJECT_PATH}/src:/var/task/src \
-    -v ${PROJECT_PATH}/vendor:/var/task/vendor \
-    -v ${PROJECT_PATH}/node_modules:/var/task/node_modules \
+    -v ${PROJECT_PATH}src:/var/task/src \
+    -v ${PROJECT_PATH}vendor:/var/task/vendor \
+    -v ${PROJECT_PATH}node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
     /bin/sh -c "${ENTRYPOINT_COMMAND}"
 
@@ -55,8 +56,8 @@ watch-assets:
     ${APP_NAME} \
     /bin/sh -c "/var/task/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/task/node_modules/laravel-mix/setup/webpack.config.js --watch"
 
-run: toolkit/laravel
-	docker build -t ${APP_NAME} .
+command: toolkit/laravel
+	docker build -t ${APP_NAME} --target app .
 
 	docker run \
     --name ${APP_NAME}-bg \
@@ -67,11 +68,11 @@ run: toolkit/laravel
     -e XDEBUG_REMOTE_HOST \
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
-    -v ${PROJECT_PATH}/src:/var/task/src \
-    -v ${PROJECT_PATH}/vendor:/var/task/vendor \
-    -v ${PROJECT_PATH}/node_modules:/var/task/node_modules \
+    -v ${PROJECT_PATH}src:/var/task/src \
+    -v ${PROJECT_PATH}vendor:/var/task/vendor \
+    -v ${PROJECT_PATH}node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
     /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/server.php ${ARGS}"
 
 toolkit/laravel:
-	cd src/toolkit/Docker ; make laravel
+	cd src/toolkit/Docker ; make stack/laravel

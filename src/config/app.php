@@ -10,7 +10,7 @@ return [
     'name' => env('APP_NAME', 'lumen'),
     'debug' => env('APP_DEBUG', false),
     'env' => env('APP_ENV', 'production'),
-    'timezone' => env('TZ', 'UTC') ?: 'UTC',
+    'timezone' => env('TZ', 'UTC'),
     'fallback_locale' => env('FALLBACK_LOCALE', 'en_US'),
     'available_locales' => env('AVAILABLE_LOCALES', 'en_US'),
     'release' => env('APP_RELEASE', 'latest'),

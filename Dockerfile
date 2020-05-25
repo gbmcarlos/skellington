@@ -1,1 +1,1 @@
-FROM toolkit/stack/laravel
+FROM toolkit/stack/laravel as app
