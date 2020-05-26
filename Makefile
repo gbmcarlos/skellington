@@ -22,8 +22,7 @@ export MEMORY_LIMIT ?= 3M
 logs: web
 	docker logs -f ${APP_NAME}
 
-web: toolkit/lumen
-	docker build -t ${APP_NAME} --target app .
+web: build
 
 	docker rm -f ${APP_NAME} || true
 
@@ -43,10 +42,9 @@ web: toolkit/lumen
     -v ${PROJECT_PATH}src:/var/task/src \
     -v ${PROJECT_PATH}vendor:/var/task/vendor \
     ${APP_NAME}:latest \
-    /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && bin/up.sh"
+    /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && bin/init.sh"
 
-command: toolkit/lumen
-	docker build -t ${APP_NAME} --target app .
+command: build
 
 	docker run \
     --name ${APP_NAME}-command \
@@ -59,6 +57,9 @@ command: toolkit/lumen
     -e XDEBUG_IDE_KEY \
     ${APP_NAME}:latest \
     /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/server.php ${ARGS}"
+
+build:
+	docker build -t ${APP_NAME} --target app .
 
 lambda: toolkit/lumen
 	docker build -t ${APP_NAME} --target lambda .
@@ -75,6 +76,3 @@ lambda: toolkit/lumen
     -e DOCKER_LAMBDA_USE_STDIN=1 \
     ${APP_NAME}:latest \
 	${ARGS}
-
-toolkit/lumen:
-	cd src/toolkit/Docker ; make stack/lumen

@@ -1,4 +1,4 @@
-FROM toolkit/stack/lumen as app
+FROM gbmcarlos/stacks:php-api as app
 
 FROM lambci/lambda:provided as lambda
 
