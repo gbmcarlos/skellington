@@ -1,6 +1,6 @@
 SHELL := /bin/bash
-.DEFAULT_GOAL := web
-.PHONY: web command watch-assets
+.DEFAULT_GOAL := logs
+.PHONY: logs web command build watch-assets
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -22,10 +22,15 @@ ENTRYPOINT_COMMAND := set -ex
 ENTRYPOINT_COMMAND += ; npm install
 ENTRYPOINT_COMMAND += ; /var/task/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/task/node_modules/laravel-mix/setup/webpack.config.js
 ENTRYPOINT_COMMAND += ; composer install -v --no-suggest --no-dev --no-interaction --no-ansi
-ENTRYPOINT_COMMAND += ; bin/up.sh
+ENTRYPOINT_COMMAND += ; bin/init.sh
 
-web: toolkit/laravel
+logs: web
+	docker logs -f ${APP_NAME}
+
+build:
 	docker build -t ${APP_NAME} --target app .
+
+web: build
 
 	docker rm -f ${APP_NAME} || true
 
@@ -48,16 +53,7 @@ web: toolkit/laravel
     ${APP_NAME}:latest \
     /bin/sh -c "${ENTRYPOINT_COMMAND}"
 
-	docker logs -f ${APP_NAME}
-
-watch-assets:
-	docker exec \
-    -it \
-    ${APP_NAME} \
-    /bin/sh -c "/var/task/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/task/node_modules/laravel-mix/setup/webpack.config.js --watch"
-
-command: toolkit/laravel
-	docker build -t ${APP_NAME} --target app .
+command: build
 
 	docker run \
     --name ${APP_NAME}-bg \
@@ -74,5 +70,9 @@ command: toolkit/laravel
     ${APP_NAME}:latest \
     /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/server.php ${ARGS}"
 
-toolkit/laravel:
-	cd src/toolkit/Docker ; make stack/laravel
+
+watch-assets:
+	docker exec \
+    -it \
+    ${APP_NAME} \
+    /bin/sh -c "/var/task/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/task/node_modules/laravel-mix/setup/webpack.config.js --watch"

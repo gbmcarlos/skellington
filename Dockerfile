@@ -1,1 +1,1 @@
-FROM toolkit/stack/laravel as app
+FROM gbmcarlos/stacks:php-web as app
