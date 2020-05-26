@@ -75,7 +75,7 @@ git commit -m "Installed Toolkit" > /dev/null
 echo "Installing Composer dependencies..."
 
 # Deploy locally and extract composer.lock
-./local/standalone.sh --quiet > /dev/null
+make web > /dev/null
 docker cp ${PROJECT_NAME}:/var/task/composer.lock .
 git add composer.lock
 git commit -m "Installed composer dependencies" > /dev/null

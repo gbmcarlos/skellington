@@ -1,6 +1,6 @@
 SHELL := /bin/bash
-.DEFAULT_GOAL := web
-.PHONY: web command lambda
+.DEFAULT_GOAL := logs
+.PHONY: logs web command lambda
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -18,6 +18,9 @@ export XDEBUG_REMOTE_HOST ?= host.docker.internal
 export XDEBUG_REMOTE_PORT ?= 10000
 export XDEBUG_IDE_KEY ?= ${APP_NAME}_PHPSTORM
 export MEMORY_LIMIT ?= 3M
+
+logs: web
+	docker logs -f ${APP_NAME}
 
 web: toolkit/lumen
 	docker build -t ${APP_NAME} --target app .
@@ -41,8 +44,6 @@ web: toolkit/lumen
     -v ${PROJECT_PATH}vendor:/var/task/vendor \
     ${APP_NAME}:latest \
     /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && bin/up.sh"
-
-	docker logs -f ${APP_NAME}
 
 command: toolkit/lumen
 	docker build -t ${APP_NAME} --target app .
