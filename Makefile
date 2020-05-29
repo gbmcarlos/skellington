@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := logs
-.PHONY: logs web command lambda
+.PHONY: logs api command lambda
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -19,10 +19,10 @@ export XDEBUG_REMOTE_PORT ?= 10000
 export XDEBUG_IDE_KEY ?= ${APP_NAME}_PHPSTORM
 export MEMORY_LIMIT ?= 3M
 
-logs: web
+logs: api
 	docker logs -f ${APP_NAME}
 
-web: build
+api: build
 
 	docker rm -f ${APP_NAME} || true
 
@@ -40,9 +40,9 @@ web: build
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
     -v ${PROJECT_PATH}src:/var/task/src \
-    -v ${PROJECT_PATH}vendor:/var/task/vendor \
+    -v ${PROJECT_PATH}vendor:/opt/vendor \
     ${APP_NAME}:latest \
-    /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && bin/init.sh"
+    /bin/sh -c "set -ex && composer install -v --no-suggest --no-dev --no-interaction --no-ansi && /opt/bin/init.sh"
 
 command: build
 
@@ -56,12 +56,12 @@ command: build
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
     ${APP_NAME}:latest \
-    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/server.php ${ARGS}"
+    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/public/index.php ${ARGS}"
 
 build:
 	docker build -t ${APP_NAME} --target app .
 
-lambda: toolkit/lumen
+lambda:
 	docker build -t ${APP_NAME} --target lambda .
 
 	cat ${PROJECT_PATH}src/lambda-payload.json | docker run \
@@ -75,4 +75,4 @@ lambda: toolkit/lumen
     -e XDEBUG_IDE_KEY \
     -e DOCKER_LAMBDA_USE_STDIN=1 \
     ${APP_NAME}:latest \
-	${ARGS}
+	${FUNCTION}

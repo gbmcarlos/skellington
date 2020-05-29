@@ -13,5 +13,8 @@
             "App\\": "/var/task/src/app/",
             "Toolkit\\": "/var/task/src/toolkit/"
         }
+    },
+    "config": {
+        "vendor-dir": "/opt/vendor"
     }
 }

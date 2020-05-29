@@ -6,7 +6,7 @@ try {
     // ignore if there is no .env
 }
 
-$app = new Laravel\Lumen\Application(__DIR__);
+$app = new Laravel\Lumen\Application(dirname(__DIR__));
 
 $app->withFacades();
 
@@ -25,12 +25,6 @@ $app->singleton(
 $app->configure('app');
 $app->configure('config');
 $app->configure('cache');
-
-//$app->middleware([
-//    \Crossbow\Helpers\Middlewares\LocaleMiddleware::class,
-//    \Crossbow\Helpers\Middlewares\HealthCheckMiddleware::class,
-//    \Crossbow\Helpers\Middlewares\BasicAuthMiddleware::class
-//]);
 
 // register service providers from config/app.php
 foreach (\Illuminate\Support\Facades\Config::get('app.providers') as $provider) {
