@@ -12,7 +12,7 @@ This skeleton allows to have a working Laravel or Lumen application running insi
     * Debug in your local with `XDEBUG_` env vars
 
 ## How to install it
-* `curl -s -L https://raw.githubusercontent.com/gbmcarlos/skellington/{branch}/installer.sh | bash /dev/stdin <project name> [<GitHub username>]`. Replace `{branch}` by the variant you want, namely, `laravel` or `lumen`
+* `curl -o- -s -L https://gbmcarlos.com/skellington.sh | bash`
 * Start working
 
 # Setup
