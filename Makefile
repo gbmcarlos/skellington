@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := logs
-.PHONY: logs web command build watch-assets
+.PHONY: logs run command build watch-assets
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -24,13 +24,13 @@ ENTRYPOINT_COMMAND += ; /var/task/node_modules/webpack/bin/webpack.js --hide-mod
 ENTRYPOINT_COMMAND += ; composer install -v --no-suggest --no-dev --no-interaction --no-ansi
 ENTRYPOINT_COMMAND += ; /opt/bin/init.sh
 
-logs: web
+logs: run
 	docker logs -f ${APP_NAME}
 
 build:
 	docker build -t ${APP_NAME} --target app .
 
-web: build
+run: build
 
 	docker rm -f ${APP_NAME} || true
 
