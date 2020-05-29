@@ -22,7 +22,7 @@ ENTRYPOINT_COMMAND := set -ex
 ENTRYPOINT_COMMAND += ; npm install
 ENTRYPOINT_COMMAND += ; /var/task/node_modules/webpack/bin/webpack.js --hide-modules --config=/var/task/node_modules/laravel-mix/setup/webpack.config.js
 ENTRYPOINT_COMMAND += ; composer install -v --no-suggest --no-dev --no-interaction --no-ansi
-ENTRYPOINT_COMMAND += ; bin/init.sh
+ENTRYPOINT_COMMAND += ; /opt/bin/init.sh
 
 logs: web
 	docker logs -f ${APP_NAME}
@@ -68,7 +68,7 @@ command: build
     -v ${PROJECT_PATH}vendor:/var/task/vendor \
     -v ${PROJECT_PATH}node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
-    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/server.php ${ARGS}"
+    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/public/index.php ${ARGS}"
 
 
 watch-assets:

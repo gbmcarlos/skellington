@@ -2,7 +2,7 @@
 
 require '/var/task/vendor/autoload.php';
 
-$app = require __DIR__ . '/app.php';
+$app = require __DIR__ . '/../bootstrap/app.php';
 
 $bootstrap = new \Toolkit\Libraries\Foundation\Laravel\Bootstrap($app);
 

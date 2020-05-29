@@ -1,12 +1,12 @@
 <?php
 
 try {
-     (\Dotenv\Dotenv::create(__DIR__))->overload();
+     (\Dotenv\Dotenv::create(__DIR__ . '../..'))->overload();
 } catch ( Dotenv\Exception\InvalidPathException $e ) {
     //
 }
 
-$app = new Illuminate\Foundation\Application(realpath(__DIR__));
+$app = new Illuminate\Foundation\Application(dirname(__DIR__));
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
