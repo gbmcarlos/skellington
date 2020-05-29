@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := logs
-.PHONY: logs api command lambda
+.PHONY: logs run command lambda
 
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
@@ -19,10 +19,10 @@ export XDEBUG_REMOTE_PORT ?= 10000
 export XDEBUG_IDE_KEY ?= ${APP_NAME}_PHPSTORM
 export MEMORY_LIMIT ?= 3M
 
-logs: api
+logs: run
 	docker logs -f ${APP_NAME}
 
-api: build
+run: build
 
 	docker rm -f ${APP_NAME} || true
 
