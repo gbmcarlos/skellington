@@ -1,6 +1,6 @@
 <?php
 
-require '/var/task/vendor/autoload.php';
+require '/opt/vendor/autoload.php';
 
 $app = require __DIR__ . '/../bootstrap/app.php';
 

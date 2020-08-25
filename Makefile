@@ -6,7 +6,8 @@ MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 PROJECT_PATH := $(dir ${MAKEFILE_PATH})
 PROJECT_NAME := $(notdir $(patsubst %/,%,$(dir ${PROJECT_PATH})))
 
-export APP_PORT ?= 80
+export DOCKER_BUILDKIT ?= 1
+export APP_PORT ?= 88
 export APP_NAME ?= ${PROJECT_NAME}
 export APP_RELEASE ?= latest
 export BASIC_AUTH_ENABLED ?= false
@@ -48,7 +49,7 @@ run: build
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
     -v ${PROJECT_PATH}src:/var/task/src \
-    -v ${PROJECT_PATH}vendor:/var/task/vendor \
+    -v ${PROJECT_PATH}vendor:/opt/vendor \
     -v ${PROJECT_PATH}node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
     /bin/sh -c "${ENTRYPOINT_COMMAND}"
@@ -65,11 +66,10 @@ command: build
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
     -v ${PROJECT_PATH}src:/var/task/src \
-    -v ${PROJECT_PATH}vendor:/var/task/vendor \
+    -v ${PROJECT_PATH}vendor:/opt/vendor \
     -v ${PROJECT_PATH}node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
     /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/public/index.php ${ARGS}"
-
 
 watch-assets:
 	docker exec \
