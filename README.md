@@ -43,7 +43,7 @@ When working on the web service, use `make` or `make logs`. This script will:
 
 ### Background process
 
-When working on a background process, use `make command ARGS={your options}`. This script will do the same as `standalone.sh`, but instead of spinning up the web server, it will run the specified Artisan command with the given options. For example
+When working on a background process, use `make command ARGS={your command}`. This script will do the same as `make run`, but instead of spinning up the web server, it will run the specified Artisan command with the given options. For example
 
 ```bash
 make command ARGS="my-command --option=1 -f"
