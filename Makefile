@@ -57,7 +57,7 @@ run: build
 command: build
 
 	docker run \
-    --name ${APP_NAME}-bg \
+    --name ${APP_NAME}-command \
     --rm \
     -it \
     -e APP_NAME \
