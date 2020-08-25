@@ -6,8 +6,8 @@ This skeleton allows to have a working Laravel or Lumen application running insi
 * [Lumen 7](https://lumen.laravel.com/docs/7.x) application.
 * Xdebug support
 * Run it with Make
-    * `make` or `make standalone` will run the project as web service
-    * `make run ARGS={your options}` will execute your arguments as a Artisan command
+    * `make` or `make run` will run the project as web service
+    * `make command ARGS={your command}` will execute your arguments as a Artisan command
 * Configure the run-time environment with environment variables
     * Debug in your local with `XDEBUG_` env vars
 
@@ -32,7 +32,7 @@ This project makes use of gbmcarlos/toolkit as a library, which is installed as 
 
 ### Web service
 
-When working on the web service, use `./local/standalone.sh`. This script will:
+When working on the web service, use `make` or `make logs`. This script will:
 
 * build the Docker image
 * run the Docker container, mounting volumes for the source and vendor folders. This will:
@@ -43,7 +43,7 @@ When working on the web service, use `./local/standalone.sh`. This script will:
 
 ### Background process
 
-When working on a background process, use `./local/run.sh {pipelineName}`. This script will do the same as `standalone.sh`, but instead of spinning up the web server, it will run the specified Artisan command with the given options. For example
+When working on a background process, use `make command ARGS={your command}`. This script will do the same as `make logs`, but instead of spinning up the web server, it will run the specified Artisan command with the given options. For example
 
 ```bash
 ./local/run.sh my-command
@@ -51,7 +51,7 @@ When working on a background process, use `./local/run.sh {pipelineName}`. This 
 
 ## Configuration environment variables
 
-These environment variables are used to configure how the project is built and ran, and they are given a default value optimized for production in the Dockerfile. `./local/standalone.sh` gives them a default value optimized for local development which overrides the one in the Dockerfile.
+These environment variables are used to configure how the project is built and ran, and they are given a default value optimized for production in the Dockerfile. Makefile gives them a default value optimized for local development which overrides the one in the Dockerfile.
 
 | ENV VAR | Default value \(production \| local\) | Description |
 | :--- | :--- | :--- |
@@ -68,7 +68,7 @@ These environment variables are used to configure how the project is built and r
 | XDEBUG\_IDE\_KEY | `APP_NAME`\_PHPSTORM | Used as the `xdebug.idekey` PHP ini configuration value. |
 
 ```bash
-APP_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true ./local/standalone.sh
+APP_PORT=8000 BASIC_AUTH_ENABLED=true BASIC_AUTH_USERNAME=user BASIC_AUTH_PASSWORD=secure_password XDEBUG_ENABLED=true make
 ```
 
 ## Running commands
@@ -83,12 +83,6 @@ Or you can execute an interactive terminal in the container with:
 
 ```bash
 docker exec -it {container-name} bash
-```
-
-You can also run any artisan command by executing the `src/server.php` file:
-
-```bash
-docker exec -it {container-name} bash -c "php src/server.php {command}"
 ```
 
 ## Installing a new package
@@ -111,18 +105,6 @@ To update the NPM dependencies, run `npm update` inside the web service containe
 docker cp {container-name}:/var/www/package-lock.json .
 ```
 
-## Watch assets \(Laravel only\)
-
-To watch the assets \(i.e. to have your assets files be compiled after every change\) you just need to run `./local/watch-assets.sh`
-
-## Update Application Key \(Laravel only\)
-
-The application key is a random string of at least 32 characters that Laravel uses to encrypt the sessions. To generate a new application key, run:
-
-```bash
-docker exec {container-name} /bin/sh -c "php src/server.php key:generate --show"
-```
-
 Then you can copy the result into your `.env` as the value of the variable `APP_KEY`
 
 ## Xdebug support
@@ -136,7 +118,7 @@ Use the `XDEBUG_` environment variables to configure your project's debugging. T
 Check [this documentation](https://gist.github.com/gbmcarlos/77614789be8a6ecc1dc3aec4b49c07bc) to configure your IDE. Use the `XDEBUG_` and `APP_NAME` environment variables and the path mappings:
 
 * "src": `/var/task/src`
-* "vendor": `/opt/php/vendor`
+* "vendor": `/opt/vendor`
 
 ## Technology Stack
 

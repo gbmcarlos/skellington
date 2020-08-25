@@ -4,7 +4,7 @@
         "php": "7.4.*",
         "laravel/lumen-framework": "^7.0",
         "vlucas/phpdotenv": "^4.1",
-        "guzzlehttp/guzzle": "^6.5",
+        "guzzlehttp/guzzle": "^7.0",
         "ext-pcntl": "*",
         "ext-json": "*"
     },

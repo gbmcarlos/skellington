@@ -1,10 +1,10 @@
 <?php
 
-try {
-    (Dotenv\Dotenv::createImmutable(__DIR__ . '../..'))->load();
-} catch (\Dotenv\Exception\InvalidPathException $exception) {
-    // ignore if there is no .env
-}
+(new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
+    dirname(__DIR__)
+))->bootstrap();
+
+date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
 $app = new Laravel\Lumen\Application(dirname(__DIR__));
 
