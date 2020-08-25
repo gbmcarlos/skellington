@@ -7,7 +7,7 @@ PROJECT_PATH := $(dir ${MAKEFILE_PATH})
 PROJECT_NAME := $(notdir $(patsubst %/,%,$(dir ${PROJECT_PATH})))
 
 export DOCKER_BUILDKIT ?= 1
-export APP_PORT ?= 88
+export APP_PORT ?= 80
 export APP_NAME ?= ${PROJECT_NAME}
 export APP_RELEASE ?= latest
 export BASIC_AUTH_ENABLED ?= false

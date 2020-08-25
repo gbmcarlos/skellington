@@ -10,7 +10,7 @@ return [
     'name' => env('APP_NAME', 'lumen'),
     'debug' => env('APP_DEBUG', false),
     'env' => env('APP_ENV', 'production'),
-    'timezone' => env('TZ', 'UTC'),
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
     'fallback_locale' => env('FALLBACK_LOCALE', 'en_US'),
     'available_locales' => env('AVAILABLE_LOCALES', 'en_US'),
     'release' => env('APP_RELEASE', 'latest'),
@@ -31,7 +31,10 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
-//        Illuminate\Database\DatabaseServiceProvider::class,
+        Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
+        Illuminate\Queue\QueueServiceProvider::class,
+        Illuminate\Database\DatabaseServiceProvider::class,
+        Illuminate\Foundation\Providers\ComposerServiceProvider::class,
 //        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
 //        Illuminate\Redis\RedisServiceProvider::class,
 //        Illuminate\Auth\AuthServiceProvider::class,
@@ -44,7 +47,6 @@ return [
 //        Illuminate\Notifications\NotificationServiceProvider::class,
 //        Illuminate\Pagination\PaginationServiceProvider::class,
 //        Illuminate\Pipeline\PipelineServiceProvider::class,
-//        Illuminate\Queue\QueueServiceProvider::class,
 //        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
     ]
 ];
