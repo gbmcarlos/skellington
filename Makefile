@@ -56,7 +56,7 @@ command: build
     -e XDEBUG_REMOTE_PORT \
     -e XDEBUG_IDE_KEY \
     ${APP_NAME}:latest \
-    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/public/index.php ${ARGS}"
+    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/artisan ${ARGS}"
 
 build:
 	docker build -t ${APP_NAME} --target app .
@@ -75,4 +75,4 @@ lambda:
     -e XDEBUG_IDE_KEY \
     -e DOCKER_LAMBDA_USE_STDIN=1 \
     ${APP_NAME}:latest \
-	${FUNCTION}
+	${HANDLER}

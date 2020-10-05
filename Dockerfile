@@ -1,4 +1,4 @@
-FROM gbmcarlos/stacks:php-api as app
+FROM gbmcarlos/php-api as app
 
 FROM lambci/lambda:provided as lambda
 
