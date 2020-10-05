@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+require '/opt/vendor/autoload.php';
+
+$app = require __DIR__.'/bootstrap/app.php';
+
+$kernel = $app->make(
+    'Illuminate\Contracts\Console\Kernel'
+);
+
+exit($kernel->handle(new ArgvInput, new ConsoleOutput));

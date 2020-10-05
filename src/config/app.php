@@ -17,8 +17,9 @@ return [
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'providers' => [
-
         \App\Providers\RoutesServiceProvider::class
-
+    ],
+    'functions' => [
+        'banana' => \App\Functions\LambdaFunction::class
     ]
 ];
