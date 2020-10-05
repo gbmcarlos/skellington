@@ -69,7 +69,7 @@ command: build
     -v ${PROJECT_PATH}vendor:/opt/vendor \
     -v ${PROJECT_PATH}node_modules:/var/task/node_modules \
     ${APP_NAME}:latest \
-    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/public/index.php ${ARGS}"
+    /bin/sh -c "composer install -v --no-suggest --no-dev --no-interaction --no-ansi && php src/artisan ${ARGS}"
 
 watch-assets:
 	docker exec \

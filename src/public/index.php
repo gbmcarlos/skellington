@@ -1,9 +1,18 @@
 <?php
 
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
 require '/opt/vendor/autoload.php';
 
-$app = require __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 
-$bootstrap = new \Toolkit\Libraries\Foundation\Laravel\Bootstrap($app);
+$kernel = $app->make(Kernel::class);
 
-$bootstrap->handle();
+$response = tap($kernel->handle(
+    $request = Request::capture()
+))->send();
+
+$kernel->terminate($request, $response);

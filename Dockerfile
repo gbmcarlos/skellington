@@ -1,1 +1,1 @@
-FROM gbmcarlos/stacks:php-web as app
+FROM gbmcarlos/php-web as app
