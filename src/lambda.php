@@ -11,7 +11,7 @@ return function(array $payload, array $context, ?string $method) use ($app) {
     $functionClass = \Illuminate\Support\Facades\Config::get('app.functions')[$method] ?? null;
 
     if (is_null($functionClass)) {
-        throw new \Exception("Couldn't find a Function class indexed as '$method' in app.function");
+        throw new \Exception("Couldn't find a Function class indexed as '$method' in app.functions");
     }
 
     $function = app($functionClass);
